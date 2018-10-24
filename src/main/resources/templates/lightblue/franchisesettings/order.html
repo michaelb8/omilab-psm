@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <th:block th:fragment="tab">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" th:utext="#{franchise.order.title}">ORDER TITLE</h3>
+            </div>
+            <div class="panel-body">
+                <p th:utext="#{franchise.order.description}"> DESCRIPTION</p>
+                <div class="form-group">
+                    <ul class="nav nav-pills nav-stacked" id="sortable">
+                        <th:block th:each="point : ${menupoints}">
+                            <li style="height:60px;" th:id="${point.id}" id="p1">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <span th:text="${point.name}"></span>
+                                        &nbsp;<i style="font-size:60%;float:right;" th:text="${point.servicedefinition.name}"></i>
+                                    </div>
+                                </div>
+                            </li>
+                        </th:block>
+                    </ul>
+                </div>
+                <form name="orderform" method="POST" th:action="@{/settings/processOrderChange}">
+                    <input type="hidden" value="" id="hiddenorder" name="order" />
+                    <button style="margin-top:2%;" type="button" class="btn btn-default" onclick="submitOrder();" th:utext="#{franchise.order.button}">SUBMIT</button>
+                </form>
+            </div>
+        </div>
+        <script>
+            function submitOrder() {
+                $( "#hiddenorder").val($("#sortable").sortable("toArray"));
+                document.orderform.submit();
+            }
+        </script>
+
+    </th:block>
+
+</html>

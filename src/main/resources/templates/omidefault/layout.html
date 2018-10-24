@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OMiLAB</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../../static/css/bootstrap.css" />
+    <link rel="stylesheet" th:href="@{/css/omilab.css}" href="../../static/css/omilab.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../../static/js/respond.min.js"></script>
+
+    <th:block th:fragment="analytics">
+        <script th:if="${@environment.getProperty('omilab.analytics')} == 'true'">
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        </script>
+        <script th:inline="javascript" th:if="${@environment.getProperty('omilab.analytics')} == 'true'">
+            /*<![CDATA[*/
+                ga('create', [[${@environment.getProperty("omilab.analytics.id")}]], 'auto');
+                ga('send', 'pageview');
+            /*]]>*/
+        </script>
+    </th:block>
+
+</head>
+<body>
+<div th:fragment="header">
+    <div id="header" class="container">
+
+        <div id="topsocial" class="social-container" style="float:right;">
+            <div class="links">
+                <a href="#" data-type="twitter" th:attr="data-url=${@environment.getProperty('app.url')}" data-description="Visit OMiLAB!" data-via="omilab" class="prettySocial fa fa-twitter" data-media="http://omi-gf03.dke.univie.ac.at/content/lab.png"></a>
+
+               <a href="#" data-type="facebook" th:attr="data-url=${@environment.getProperty('app.url')}" data-title="OMiLAB" data-description="Visit OMiLAB!"  class="prettySocial fa fa-facebook" data-media="http://omi-gf03.dke.univie.ac.at/content/lab.png"></a>
+                <!--  <a href="#" data-type="facebook" data-url="http://www.omilab.org" data-title="OMiLAB" data-description="Visit OMiLAB!" data-media="http://sonnyt.com/assets/imgs/prettySocial.png" class="prettySocial fa fa-facebook"></a> -->
+
+                 <a href="#" data-type="googleplus" th:attr="data-url=${@environment.getProperty('app.url')}" data-description="Visit OMiLAB!" class="prettySocial fa fa-google-plus" data-media="http://omi-gf03.dke.univie.ac.at/content/lab.png"></a>
+
+                 <a href="#" data-type="linkedin" th:attr="data-url=${@environment.getProperty('app.url')}" data-title="OMiLAB" data-description="Visit OMiLAB!" class="prettySocial fa fa-linkedin" data-media="http://omi-gf03.dke.univie.ac.at/content/lab.png"></a>
+             </div>
+         </div>
+
+         <!--       <img th:src="@{/images/omilogo.png}" src="../static/images/omilogo.png" alt="OMiLAB" title="OMiLAB" style="width:20%;margin-bottom:2%;margin-left:4%;margin-right:5%;float:left;"> </img> -->
+        <div style="color:white;">
+            <p style="font-size:40px;margin-top:1%;" id="headertitle" th:utext="${@environment.getProperty('omilab.title')}">Open Models Laboratory - Vienna</p>
+        </div>
+    </div>
+
+</div>
+
+<div th:fragment="navigation">
+    <div id="topmenu">
+        <nav class="navbar navbar-default" id="navigation" style="margin-top:2%; border-radius: 0;">
+            <div class="container">
+                <div class="navbar-header parent">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only" th:utext="#{general.layout.toggletext}">TOGGLE</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" rel="home" th:href="@{/}" title="OMiLAB">
+                        <img th:src="@{/images/omilab.png}" src="../../static/images/omilab.png" alt="OMiLAB" title="OMiLAB" style="max-width:100px; margin-top: -7px;"> </img>
+                    </a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li  th:each="mainnavigation : ${@MainNavigationManagementService.getMenu()}">
+                            <span th:src="${mainnavigation.class.name}"> </span>
+                            <a th:if="${mainnavigation.class.name == 'org.omilab.psm.model.db.MainNavigationItemLink'} and ${mainnavigation.visible}" th:unless="${mainnavigation.authentication} == true and ${#authentication.name} == 'anonymousUser'" target="_blank" th:href="${mainnavigation.link}" th:text="${mainnavigation.displayname}">LINK</a>
+                            <a th:if="${mainnavigation.class.name == 'org.omilab.psm.model.db.MainNavigationItemHTML'} and ${mainnavigation.visible}" th:unless="${mainnavigation.authentication} == true and ${#authentication.name} == 'anonymousUser'" th:href="@{/{page}(page=${mainnavigation.link})}" th:text="${mainnavigation.displayname}">LINK</a>
+                            <a th:if="${mainnavigation.class.name == 'org.omilab.psm.model.db.MainNavigationItemTypes'} and ${mainnavigation.visible}" th:unless="${mainnavigation.authentication} == true and ${#authentication.name} == 'anonymousUser'" th:href="@{/{page}(page=${mainnavigation.link})}" th:text="${mainnavigation.displayname}">LINK</a>
+                            <a th:if="${mainnavigation.class.name == 'org.omilab.psm.model.db.MainNavigationItemProject'} and ${mainnavigation.visible}" th:unless="${mainnavigation.authentication} == true and ${#authentication.name} == 'anonymousUser'" th:href="@{/{page}(page=${mainnavigation.link})}" th:text="${mainnavigation.displayname}">LINK</a>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-right" role="search" method="get" th:action="@{/search}">
+                        <div class="input-group">
+                            <input th:if="${#httpServletRequest.getParameter('q')} == null" type="text" class="form-control" placeholder="SEARCH" th:placeholder="#{general.layout.search}" name="q"> </input>
+                            <input th:if="${#httpServletRequest.getParameter('q')} != null" type="text" class="form-control" placeholder="SEARCH" th:placeholder="#{general.layout.search}" th:value="${#httpServletRequest.getParameter('q')}" name="q"> </input>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                            </span>
+                        </div>
+
+                    </form>
+
+                    <ul th:unless="${#authentication.name} == 'anonymousUser'" class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" ><span th:text="${#authentication.name}">username</span><span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a th:utext="#{general.layout.editprofile}" th:href="@{/editprofile}">EDITPROFILE</a></li>
+                                <li><a th:utext="#{general.layout.logout}" th:href="@{/logout}">LOGOUT</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li sec:authorize="hasPermission('franchise', 'franchiseadmin')"><a th:href="@{/settings}"> <span th:utext="#{general.layout.franchisesettings}">FRANCHISE</span>&nbsp;<span class="badge bootstrapred">Admin</span> </a></li>
+                                <li th:classappend="${session.adminview} ? active"><a th:href="@{/profile/changeView}" th:utext="#{general.layout.togglecontrols}">TOGGLE</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul th:if="${#authentication.name} == 'anonymousUser'" class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" > <span th:utext="#{general.layout.anonymous}"> NOT LOGGED IN </span> <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a th:utext="#{general.layout.login}" th:href="@{/login}">LOGIN</a></li>
+                                <li><a th:utext="#{general.layout.register}" th:href="@{/register}">REGISTER</a></li>
+                                <li><a th:utext="#{general.layout.password}" th:href="@{/forgottenpassword}">Forgot Password</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div th:if="${@ProjectService.getOpenProposals()} > 0" id="proposalNotification" class="alert alert-info msgbox" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span th:utext="#{wizard.notification.unread(${@ProjectService.getOpenProposals()})}"></span> <span th:utext="#{wizard.notification.link}"></span> <b><a th:href="@{/wizard/start(proposaluuid=${@ProjectService.getFirstOpenProposal().proposalID})}" th:text="${@ProjectService.getFirstOpenProposal().name}"></a></b></div>
+
+
+            <div th:if="${@GlobalNetworkService.uptodate()}" sec:authorize="hasPermission('franchise', 'franchiseadmin')" class="alert alert-warning msgbox" role="alert"><b th:utext="#{general.layout.update}">SUCCESS </b> </div>
+
+
+            <div th:if="${successMessage}" class="alert alert-success msgbox" role="alert"><b th:utext="#{general.layout.successbox}">SUCCESS </b> <span th:text="${successMessage}"> </span></div>
+            <div th:if="${infoMessage}" class="alert alert-info msgbox" role="alert"><b th:utext="#{general.layout.infobox}">INFO </b> <span th:text="${infoMessage}"> </span></div>
+            <div th:if="${warningMessage}" class="alert alert-warning msgbox" role="alert"><b th:utext="#{general.layout.warningbox}">WARNING </b> <span th:text="${warningMessage}"> </span></div>
+            <div th:if="${errorMessage}" class="alert alert-danger msgbox" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><b th:utext="#{general.layout.errorbox}">ERROR </b> <span th:text="${errorMessage}"> </span></div>
+
+
+            <div th:if="${generationtime}" style="position:fixed; padding:10px; top:0px;" class="alert-info">
+                <div th:if="${generationtime}"><b>[DEBUG] </b> Overall page generation time: <strong><span th:text="${generationtime}"> </span> </strong>ms. </div>
+                <div th:if="${wrapper}" th:unless="${wrapper.responseTime} == 0"><b>[DEBUG] </b> Remote service took  <strong><span th:text="${wrapper.responseTime}"> </span> </strong> ms to respond. Therefore PSM operation took <strong th:text="${generationtime} - ${wrapper.responseTime}"></strong> ms.</div>
+            </div>
+
+            <noscript>
+                <div class="alert alert-info" id="javascriptinfo" style="margin-top:2%;" role="alert" th:utext="#{general.layout.jswarning}">JSWARNING</div>
+            </noscript>
+        </div>
+    </div>
+</div>
+
+
+
+<div th:fragment="footer">
+    <div id="footer" class="footer" th:utext="${@GlobalConfigurationService.getValue('footer')}"></div>
+    <div id="cookie-notification" th:if="${@environment.getProperty('omilab.showcookiewarning')} == 'true'">
+        <p class="text-center">
+            <span th:utext="#{cookie.message.warning}"></span>&nbsp;<button class="btn btn-default btn-xs" type="button" data-toggle="modal" data-target="#cookieModal" th:utext="#{cookie.message.readmore}">Read more</button>&nbsp;<button onclick="agreeCookies()" class="btn btn-primary btn-xs" type="button" th:utext="#{cookie.message.agree}">OK</button>
+        </p>
+    </div>
+    <div class="modal fade" id="cookieModal" tabindex="-1" role="dialog" aria-labelledby="cookieModalLabel" th:if="${@environment.getProperty('omilab.showcookiewarning')} == 'true'">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="cookieModalLabel" th:utext="#{cookie.message.modalheader}">Cookie Info</h3>
+                </div>
+                <div class="modal-body" th:utext="#{cookie.message.information}">
+                    Cookie information
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/jquery-1.9.1.min.js}" src="../../static/js/jquery-1.9.1.min.js"></script>
+<script th:src="@{/js/bootstrap.min.js}" src="../../static/js/bootstrap.min.js"></script>
+<script th:src="@{/js/omilab.js}" src="../../static/js/omilab.js"></script>
+</body>
+</html>

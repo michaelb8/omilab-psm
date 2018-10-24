@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <form id="Ostatusforms" method="POST" th:action="@{/settings/processOStatus}">
+        <div class="modal-body">
+            <p th:utext="#{franchise.types.overlay.description}">DESCRIPTION</p>
+            <div class="form-group" style="overflow-y: scroll; max-height:300px;">
+                <ul class="nav nav-pills nav-stacked" id="Wstatus" style="width:92%;float:left;">
+                    <li th:each="item : ${overlay}" th:id="${item}" role="presentation" class="ajaxsingleclickable" th:classappend="${item} == ${coverlay} ? active"><a th:text="${item}">MMProject</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" id="hiddenenabledoverlay" name="enabled"/>
+            <input type="hidden" id="typeid" name="id" th:value="${projecttype.id}"/>
+            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.addWEndpoint.abort}">ABORT</button>
+            <button type="button" onclick="submitOverlayStatus();" class="btn btn-primary" th:utext="#{franchise.types.addWEndpoint.confirm}">CONFIRM</button>
+        </div>
+    </form>
+
+</html>

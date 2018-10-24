@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <th:block th:fragment="tab">
+
+        <div  th:if="${#httpServletRequest.getParameter('cerror')} != null" class="alert alert-danger msgbox" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><b th:utext="#{franchise.franchises.error}">ERROR </b></div>
+
+
+        <div class="panel panel-default" th:if="${pages.current} == 1">
+            <div class="panel-heading">
+                <h3 class="panel-title" th:utext="#{franchise.franchises.title}">FRANCHISES TITLE</h3>
+            </div>
+            <div class="panel-body">
+                <th:block th:unless="${@GlobalConfigurationService.getValue('gn_regstatus')} == 'true'">
+                    <p th:utext="#{franchise.franchises.unregistered}"></p>
+                    <form th:action="@{/settings/processNetworkRegistration}" method="POST">
+                        <input type="hidden" name="register" value="now" />
+                        <button type="submit" class="btn btn-default" data-dismiss="modal" th:text="#{franchise.franchises.register}">CLOSE</button>
+                    </form>
+                </th:block>
+                <th:block th:if="${@GlobalConfigurationService.getValue('gn_regstatus')} == 'true'">
+                    <p th:utext="#{franchise.franchises.connection}"></p>
+                    <p> <b th:text="#{franchise.franchises.lastcontact}"></b> <span th:text="${@GlobalConfigurationService.getValue('gn_lastcontact')}"></span></p>
+                    <th:block th:if="${#httpServletRequest.getParameter('expert')} == 'true'">
+                        <form th:action="@{/settings/processNetworkSync}" method="POST" style="float:right;">
+                            <input type="hidden" name="sync" value="now" />
+                            <button type="submit" class="btn btn-warning">Sync</button>
+                        </form>
+                        <form th:action="@{/settings/processNetworkRemoval}" method="POST" style="float:right;margin-right:1%;">
+                            <input type="hidden" name="remove" value="now" />
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
+                    </th:block>
+                </th:block>
+            </div>
+        </div>
+    </th:block>
+
+</html>

@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <ul class="nav nav-pills nav-stacked" id="statuspt">
+        <li th:each="item : ${types}" th:id="${item.id}" role="presentation" class="ajaxclickable" th:classappend="${#lists.contains(typesusage, item)} ? active"><a th:text="${item.name}">Home</a></li>
+    </ul>
+
+</html>

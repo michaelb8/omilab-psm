@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="embedTiles">
+    <th:block th:each="project : ${projects}">
+
+
+            <th:block th:unless="${project.inConfig}">
+                <!-- Tile handling for normal projects -->
+                <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MMProject'}">
+                        <th:block th:unless="${#httpServletRequest.getParameter('param')} == 'download'">
+                            <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} == null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                                <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.backgroundColor} + ';'" class="flip-front ha">
+                                    <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                                    </div>
+                                </div>
+                                <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.backgroundColor} + ';'" class="flip-back ha"
+                                     th:utext="${@ProjectService.getBackTileForProject(project)}">
+                                </div>
+                            </div>
+                            <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} != null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                                <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.projecttype.backgroundColor} + ';'" class="flip-front ha">
+                                    <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                                    </div>
+                                </div>
+                                <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.projecttype.backgroundColor} + ';'" class="flip-back ha"
+                                     th:utext="${@ProjectService.getBackTileForProject(project)}">
+                                </div>
+                            </div>
+                        </th:block>
+                    <th:block th:if="${#httpServletRequest.getParameter('param')} == 'download' and ${project.released}">
+                        <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} == null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                            <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.backgroundColor} + ';'" class="flip-front ha">
+                                <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                                </div>
+                            </div>
+                            <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.backgroundColor} + ';'" class="flip-back ha"
+                                 th:utext="${@ProjectService.getBackTileForProject(project)}">
+                            </div>
+                        </div>
+                        <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} != null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                            <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.projecttype.backgroundColor} + ';'" class="flip-front ha">
+                                <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                                </div>
+                            </div>
+                            <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.projecttype.backgroundColor} + ';'" class="flip-back ha"
+                                 th:utext="${@ProjectService.getBackTileForProject(project)}">
+                            </div>
+                        </div>
+                    </th:block>
+                </th:block>
+                <!-- Tile handling for events -->
+                <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.Event'}">
+                    <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} != null" class="live-tile ha two-tall two-wide" th:id="'tile_' + ${project.id}">
+                        <div th:style="'background-color: ' + ${project.projecttype.backgroundColor} + ';'" class="flip-front ha">
+                            <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}"></div>
+                        </div>
+                    </div>
+                </th:block>
+                <!-- Tile handling for development tools -->
+                <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MServiceTool'}">
+                    <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} == null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                        <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.backgroundColor} + ';'" class="flip-front ha">
+                            <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                            </div>
+                        </div>
+                        <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.backgroundColor} + ';'" class="flip-back ha"
+                             th:utext="${@ProjectService.getBackTileForProject(project)}">
+                        </div>
+                    </div>
+                    <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} != null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                        <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.projecttype.backgroundColor} + ';'" class="flip-front ha">
+                            <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                            </div>
+                        </div>
+                        <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.projecttype.backgroundColor} + ';'" class="flip-back ha"
+                             th:utext="${@ProjectService.getBackTileForProject(project)}">
+                        </div>
+                    </div>
+                </th:block>
+                <!-- Your tile configuration here -->
+            </th:block>
+
+
+    </th:block>
+</th:block>
+
+<input class="realPageId" type="hidden" th:value="${realNumber}"></input>
+<input class="pageSize" type="hidden" th:value="${pageSize}"></input>
+</html>
+
+

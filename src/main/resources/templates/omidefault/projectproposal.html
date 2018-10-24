@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"> <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+
+            <span th:if="${mni.newprojectlabel} != null" th:text="${mni.newprojectlabel}">project</span>
+            <span th:if="${mni.newprojectlabel} == null"><span th:utext="#{project.proposal.title}">PROPOSAL</span></span>
+        </h4>
+    </div>
+    <form th:action="@{/processNewProposal}" method="POST">
+        <div class="modal-body">
+
+            <p th:utext="#{project.proposal.desc}">DESCRIPTION</p>
+
+            <label for="projectname" class="control-label" th:utext="#{project.proposal.name}">PROJECTNAME</label>
+            <input type="text" class="form-control" id="projectname" name="name" />
+
+            <label for="abstract" class="control-label" th:utext="#{project.proposal.abstract}">ABSTRACT</label>
+            <textarea rows="5" class="form-control" id="abstract" name="abstract"></textarea>
+
+            <label for="projectcontact" class="control-label" th:utext="#{project.proposal.contact}">PROJECT CONTACT</label>
+            <input th:if="${user} != null" type="text" class="form-control disabled" id="projectcontact" name="userfullname" th:value="${user.firstName} + ' ' + ${user.lastName}" disabled="disabled"/>
+            <input th:if="${user} == null" type="text" class="form-control disabled" id="projectcontact" name="userfullname" value="(LDAP unavailable)" disabled="disabled"/>
+
+            <label for="projectemail" class="control-label" th:utext="#{project.proposal.email}">EMAIL</label>
+            <input th:if="${user} != null" type="text" class="form-control disabled" id="projectemail" name="userEmail" th:value="${user.emailAddress}" disabled="disabled"/>
+            <input th:if="${user} == null" type="text" class="form-control disabled" id="projectemail" name="userEmail" value="(LDAP unavailable)" disabled="disabled"/>
+            <input type="hidden" name="siteparam" th:value="${siteurl}"/>
+
+            <label for="projectaffiliation" class="control-label" th:utext="#{project.proposal.affiliation}">AFFILIATION</label>
+            <input th:if="${user} != null" type="text" class="form-control disabled" id="projectaffiliation" name="userOrg" th:value="${user.organization}" disabled="disabled"/>
+            <input th:if="${user} == null" type="text" class="form-control disabled" id="projectaffiliation" name="userOrg" value="(LDAP unavailable)" disabled="disabled"/>
+
+            <th:block th:if="${#lists.size(mni.types)} > 1">
+                <label class="control-label" th:utext="#{project.proposal.type}">TYPE</label>
+                <div class="form-group" style="overflow-y: scroll; max-height:300px;">
+                    <ul class="nav nav-pills nav-stacked" id="status">
+                        <li th:each="item : ${mni.types}" th:id="${item.id}" role="presentation" class="ptClickable"><a th:text="${item.name}">Default</a></li>
+                    </ul>
+                </div>
+            </th:block>
+            <input type="hidden" id="selected" name="projecttype" value="0"/>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:utext="#{project.proposal.abort}">Close</button>
+            <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#proposed" th:utext="#{project.proposal.confirm}">SUBMIT</button>
+        </div>
+    </form>
+</div>
+
+</html>

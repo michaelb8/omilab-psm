@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+
+    <th:block th:fragment="tab">
+        <div class="panel panel-default" th:if="${pages.current} == 1">
+            <div class="panel-heading">
+                <h3 class="panel-title" th:utext="#{franchise.service.title}">SERVICES TITLE</h3>
+            </div>
+            <div class="panel-body">
+                <form method="POST" th:action="@{/settings/processServiceCreation}" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="fileup" th:utext="#{franchise.service.upload1}">UPLOAD1</label>
+                        <input type="file" id="fileup" name="fileup" accept=".json"/>
+                        <p class="help-block" th:utext="#{franchise.service.upload2}">UPLOAD2</p>
+                    </div>
+                    <button type="submit" class="btn btn-default" th:utext="#{franchise.service.uploadbutton}">SUBMIT</button>
+                </form>
+            </div>
+        </div>
+        <div th:each="service : ${services}" class="panel panel-default">
+            <div th:if="${service.visible} == false" class="panel-heading" style="background-color:#F2DEDE !important;">
+                <h3 class="panel-title" th:text="${service.name}">Servicename</h3>
+            </div>
+            <div th:if="${service.visible} == true" class="panel-heading" style="background-color:#DFF0D8 !important;">
+                <h3 class="panel-title" th:text="${service.name}">Servicename</h3>
+            </div>
+            <div class="panel-body">
+                <p> <b th:utext="#{franchise.service.url}"> URL:</b> <span th:text="${service.url}"> http://localhost:8183/ </span></p>
+                <p> <b th:utext="#{franchise.service.available}"> AVAILABLE:</b> <span th:text="${service.visible}"> TRUE </span></p>
+                <p> <b th:utext="#{franchise.service.developer}"> DEVELOPER:</b> <span th:text="${service.developer}"> OMiLAB </span> </p>
+                <p> <b th:utext="#{franchise.service.description}"> DESCRIPTION:</b> <span th:text="${service.description}">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. </span></p>
+                <ul class="franchise-button-list">
+                    <li>
+                        <button type="submit" class="btn btn-default  btn-xs" data-toggle="modal" data-target="#deleteConfirm"><span th:utext="#{franchise.service.delete}">Delete</span> <span class="glyphicon glyphicon-remove"></span></button>
+                        <input type="hidden" name="id" th:value="${service.id}" />
+                    </li>
+                    <li th:if="${service.visible} == true">
+                        <form method="POST" th:action="@{/settings/processServiceDisable}">
+                            <button type="submit" class="btn btn-default  btn-xs"> <span th:utext="#{franchise.service.disable}">Disable</span> <span class="glyphicon glyphicon-off"></span></button>
+                            <input type="hidden" name="id" th:value="${service.id}" />
+                        </form>
+                    </li>
+                    <li th:if="${service.visible} == false">
+                        <form method="POST" th:action="@{/settings/processServiceEnable}">
+                            <button type="submit" class="btn btn-default  btn-xs"> <span th:utext="#{franchise.service.enable}">Enable</span> <span class="glyphicon glyphicon-off"></span></button>
+                            <input type="hidden" name="id" th:value="${service.id}" />
+                        </form>
+                    </li>
+                    <li>
+                        <button class="btn btn-default btn-xs movedown" data-toggle="modal" data-target="#addEndpoint"> <span th:utext="#{franchise.service.addendpoint}"> ADD ENDPOINT</span> <span class="glyphicon glyphicon-share"></span> </button>
+                        <input type="hidden" class="id" name="id" th:value="${service.id}" />
+                    </li>
+                    <li>
+                        <button class="btn btn-default btn-xs movedown" data-toggle="modal" data-target="#editEndpoints"> <span th:utext="#{franchise.service.listendpoints}"> EDIT ENDPOINT</span> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> </button>
+                        <input type="hidden" class="id" name="id" th:value="${service.id}" />
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center">
+            <nav>
+                <ul class="pagination">
+                    <li th:if="${pages.current} == 1" class="disabled">
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li th:unless="${pages.current} == 1">
+                        <a th:href="@{/settings(view=service,page=${pages.previous})}"
+                           href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li th:each="pageNumber : ${pages.pagesList}">
+                        <a href="#" th:href="@{/settings(view=service,page=${pageNumber})}" th:text="${pageNumber}"></a>
+                    </li>
+                    <li th:if="${pages.current} == ${pages.end} or ${pages.end} == 0" class="disabled">
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li th:unless="${pages.current} == ${pages.end} or ${pages.end} == 0">
+                        <a th:href="@{/settings(view=service,page=${pages.next})}"
+                           href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="modal fade" id="addEndpoint" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelAddEndpoint" th:utext="#{franchise.service.addendpoint.title}">HEADER</h4>
+                    </div>
+                    <form method="POST" th:action="@{/settings/processEndpointCreation}">
+                        <div class="modal-body">
+                            <p th:utext="#{franchise.service.addendpoint.desc}">DESCRIPTION</p>
+
+                            <label for="endpointname" class="control-label" th:utext="#{franchise.service.addendpoint.name}">LINE1</label>
+                            <input type="text" class="form-control" id="endpointname" name="name" />
+
+                            <label for="endpoint" class="control-label" th:utext="#{franchise.service.addendpoint.endpoint}">LINE1</label>
+                            <input type="text" class="form-control" id="endpoint" name="endpoint" />
+
+
+                            <div class="input-group" style="margin-top:3%;">
+                                <span class="input-group-addon">
+                                    <input type="radio" name="mandatory" value="true" aria-label="...">Mandatory</input>
+                                    <input type="radio" name="mandatory" value="false" aria-label="..."> Not Mandatory</input>
+                                </span>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="serviceendpointid" name="id"/>
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.service.addendpoint.abort}">ABORT</button>
+                            <button onclick="submitStatus();" class="btn btn-primary" th:utext="#{franchise.service.addendpoint.confirm}">CONFIRM</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editEndpoints" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div id="endpointAjaxContent">
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabel" th:utext="#{franchise.service.securityquestiontitle}">SECURITY QUESTION TITLE</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p th:utext="#{franchise.service.securityquestionline1}">LINE1</p>
+                        <p th:utext="#{franchise.service.securityquestionline2}">LINE2</p>
+                        <p id="ajaxResult" style="overflow-y: scroll; max-height:400px;"></p>
+                        <p style="margin-top:7%;" th:utext="#{franchise.service.securityquestionline3}"> LINE3</p>
+                        <label for="conftext" class="control-label" th:utext="#{franchise.service.securityquestionlabel}">LABEL</label>
+                        <input type="text" class="form-control" id="conftext" />
+                    </div>
+                    <div class="modal-footer">
+                        <form method="POST" th:action="@{/settings/processServiceRemoval}">
+                            <input type="hidden" name="force" th:value="${#httpServletRequest.getParameter('force')}" />
+                            <input type="hidden" name="id" id="modalid" />
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.service.securityquestionabort}">ABORT</button>
+                            <button type="submit" id="confbtn" class="btn btn-primary" th:utext="#{franchise.service.securityquestionconfirm}">CONFIRM</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function submitStatusEndpoint() {
+                $("#endpointedit").val("delete_this_item");
+                $("#endpointnameedit").val("delete_this_item");
+                document.forms['endpointeditform'].submit();
+            }
+        </script>
+    </th:block>
+
+</html>

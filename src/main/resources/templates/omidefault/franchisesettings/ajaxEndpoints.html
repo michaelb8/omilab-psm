@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="modalLabelAddEndpoint" th:utext="#{franchise.service.listendpoints.title}">HEADER</h4>
+        </div>
+            <div class="modal-body">
+                <p th:utext="#{franchise.service.listendpoints.desc}">DESCRIPTION</p>
+                <div class="form-group" style="overflow-y: scroll; max-height:300px;">
+                    <ul class="nav nav-pills nav-stacked" id="status">
+                        <li th:each="item : ${endpoints}" th:id="${item.id}" role="presentation" class="endpointClickable"><a th:text="${item.name}">Home</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.service.listendpoints.abort}">ABORT</button>
+            </div>
+    </div>
+</div>
+
+</html>

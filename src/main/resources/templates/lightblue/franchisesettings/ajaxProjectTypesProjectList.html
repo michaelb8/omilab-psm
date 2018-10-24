@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <div class="modal-body">
+        <p th:utext="#{franchise.types.addproject.line1}">DESCRIPTION</p>
+        <div class="form-group" style="overflow-y: scroll; max-height:300px;">
+            <ul class="nav nav-pills nav-stacked" id="Pstatus">
+                <li th:each="item : ${projects}" th:id="${item.id}" role="presentation" th:attrappend="class=${item.inConfig == true}?' disabled'" class="ajaxclickable" th:classappend="${item.projecttype} != null ? ( ${item.projecttype} == ${projecttype} ? active : disabled)"><a><span th:text="${item.name}" >Home </span>  <i style="float:right;font-size: 80%; color: #d14;"><span th:if="${item.inConfig}" th:utext="#{franchise.types.addproject.warning}">in creation</span></i></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="hidden" id="hiddenenabledproject" name="enabled"/>
+        <input type="hidden" id="typeid" name="id" th:value="${projecttype.id}"/>
+        <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.addproject.abort}">ABORT</button>
+        <button type="button" onclick="submitProjectStatus('statusformp');" class="btn btn-primary" th:utext="#{franchise.types.addproject.confirm}">CONFIRM</button>
+    </div>
+
+</html>

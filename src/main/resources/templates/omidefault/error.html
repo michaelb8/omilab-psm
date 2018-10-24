@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+
+<head lang="en">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.error}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../static/css/bootstrap.css" />
+    <link rel="stylesheet" th:href="@{/css/omilab.css}" href="../static/css/omilab.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../static/js/respond.min.js"></script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+</head>
+<body>
+
+    <div id="header" class="container">
+        <div class="speciallogocontainer">
+            <img class="logo speciallogo" th:src="@{/images/omilogo.png}" src="../static/images/omilogo.png" />
+        </div>
+    </div>
+
+    <div class="container">
+
+        <h1 class="importantmessage"> The application has encountered an error. Please contact support at <span th:text="${@environment.getProperty('omilab.support')}"> support@omilab.org</span></h1>
+
+        <div class="panel panel-default errorbox" >
+            <div class="panel-heading">
+                <h3 class="panel-title" th:utext="#{general.error.box}">ERRORBOX</h3>
+            </div>
+            <div class="panel-body">
+                <p th:if="${url}">
+                    <b th:utext="#{general.error.page}">Page:</b> <span th:text="${url}">Page URL</span>
+                </p>
+                <p th:if="${timestamp}" id='created'>
+                    <b th:utext="#{general.error.time}">Occurred:</b> <span th:text="${timestamp}">Timestamp</span>
+                </p>
+                <p th:if="${status}">
+                    <b th:utext="#{general.error.status}">Response Status:</b> <span th:text="${status}">status-code</span> <span
+                        th:if="${error}" th:text="'('+${error}+')'">error ...</span>
+                </p>
+                <p th:if="${message}">
+                    <b th:utext="#{general.error.exception}">Exception:</b> <span th:text="${message}">status-code</span>
+                </p>
+            </div>
+        </div>
+
+        <div th:include="layout :: footer"></div>
+
+    </div>
+
+    <script th:src="@{/js/jquery-1.9.1.min.js}" src="../static/js/jquery-1.9.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/omilab.js}" src="../static/js/omilab.js"></script>
+</body>
+</html>

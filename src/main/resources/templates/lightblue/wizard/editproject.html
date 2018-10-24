@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head lang="en">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.wizard.createproject}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" href="../../../static/css/font-awesome.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../../../static/css/bootstrap.css" />
+    <link rel="stylesheet" th:href="@{/css/datepicker.css}" href="../../../static/css/datepicker.css"/>
+    <link rel="stylesheet" th:href="@{/css/omilab_lightblue.css}" href="../../../static/css/omilab_lightblue.css"/>
+
+    <link rel="stylesheet" th:href="@{/css/jquery.tagit.css}" href="../../../static/css/jquery.tagit.css" />
+    <link rel="stylesheet" th:href="@{/css/tagit.ui-zendesk.css}" href="../../../static/css/tagit.ui-zendesk.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../../../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../../../static/js/respond.min.js"></script>
+    <script th:src="@{/js/jquery-1.9.1.min.js}" src="../../../static/js/jquery-1.9.1.min.js"></script>
+    <script th:src="@{/js/jquery-ui.min.js}" src="../../../static/js/jquery-ui.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../../../static/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/tag-it.min.js}" src="../../../static/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+    <script th:src="@{/js/validator.js}" src="../../../static/js/validator.js"></script>
+    <script th:src="@{/js/datepicker.js}" src="../../../static/js/datepicker.js"></script>
+    <script th:src="@{/js/omilab_lightblue.js}" src="../../../static/js/omilab_lightblue.js"></script>
+    <script th:src="@{/js/prettySocial.min.js}" src="../../../static/js/prettySocial.min.js"></script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+</head>
+
+<body>
+
+<div th:include="layout :: header"></div>
+
+<div th:include="layout :: navigation"></div>
+
+<div id="content" class="container padding" >
+
+    <div th:include="wizard/createproject :: wizmsg"></div>
+
+    <div th:include="wizard/createproject :: projcreaterror"></div>
+
+    <form method="POST" th:action="@{/wizard/processEdit}" id="newProjForm" th:unless="${#httpServletRequest.getParameter('error') == 'true'}">
+        <div class="row" th:unless="${failed} == 'true'">
+            <div class="col-sm-3">
+                <ul class="wizard-nav-list">
+                    <th:block th:each="item : ${wizardnavigation}">
+                        <li class="wizard-nav-item">
+                            <a class="wizard-nav-item-link" th:classappend="${item.active} ? wizard-nav-active">
+                                <i class="icon-dashboard"></i> foo <span th:utext="${item.name}">Home</span>
+                            </a>
+                        </li>
+                    </th:block>
+                </ul>
+
+                <input type="hidden" name="proposaluuid" th:value="${id}" />
+                <button type="submit" id="proceedbtn" class="btn btn-primary"><b th:utext="#{wizard.project.next}">Proceed</b> <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span></button>
+            </div>
+
+            <div class="col-sm-9">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" th:utext="#{wizard.project.title}">BOXTITLE</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="form-group" >
+                            <label for="name" th:utext="#{project.settings.configuration.name}">NAME:</label>
+                            <input th:value="${project.name}" data-validation="length" data-validation-length="4-140" type="text" class="form-control" id="name" name="name" th:placeholder="#{project.settings.configuration.name.placeholder}" />
+                        </div>
+                        <div class="form-group">
+                            <label for="abbreviation" th:utext="#{project.settings.configuration.abbreviation}">ABBREVIATION:</label>
+                            <input th:value="${project.abbreviation}" type="text" data-validation="length" data-validation-length="2-8" class="form-control" id="abbreviation" name="abbreviation" th:placeholder="#{project.settings.configuration.abbreviation.placeholder}" />
+                        </div>
+                        <div class="form-group">
+                            <label for="urlidentifier" th:utext="#{project.settings.configuration.urlidentifier}">URLIDENTIFIER:</label>
+                            <input th:value="${project.urlidentifier}" type="text" data-validation="length alphanumeric" data-validation-length="2-25" class="form-control" id="urlidentifier" name="urlidentifier" th:placeholder="#{project.settings.configuration.urlidentifier.placeholder}"/>
+                        </div>
+                        <div class="form-group">
+                            <input name="tags" id="keywordshidden" value="" type="hidden" th:value="${keywords}"/>
+                            <label for="keywords" th:utext="#{project.settings.configuration.keywords}">KEYWORDS</label>
+                            <ul id="keywords"></ul>
+                        </div>
+
+                        <div th:include="projectoverlays/embedEdit :: eeContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+
+<div th:include="layout :: footer"></div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    if($('#rf').is(":checked")){
+        $('.downloadpub').hide();
+    }
+    $('body').on('change', '.releasecheckbox', function (){
+        if ($('#rt').is(":checked")) {
+            $('.downloadpub').show();
+        }
+        if ($('#rf').is(":checked")) {
+            $('.downloadpub').hide();
+        }
+    });
+
+    $.validate({
+        modules : 'html5'
+    });
+
+    $( "#proposalNotification" ).hide();
+    $('#proposal-notification-placeholder').hide();
+
+
+    $('#startDate').datepicker({
+        format: "dd/mm/yyyy"
+    });
+    $('#endDate').datepicker({
+        format: "dd/mm/yyyy"
+    });
+
+    $(function(){
+        var tags = /*[[${franchisekeywords}]]*/ null;
+
+        $('#keywords').tagit({
+            availableTags: tags,
+            singleField: true,
+            singleFieldNode: $('#keywordshidden')
+        });
+    });
+
+    $( "#browse" ).click(function() {
+        doBrowse("projectlogo");
+    });
+    $( "#browsemodel" ).click(function() {
+        doBrowse("projectmodel");
+    });
+
+    var tempID;
+    var messageEventListenerAdded;
+    function doBrowse(param) {
+        tempID = param;
+        var width = '80%';
+        var height = '70%';
+
+        var repourl = [[${@environment.getProperty("omilab.repository")}]];
+
+        if(!popup( repourl + "/index.html",width,height))
+            alert("Please enable Popups to use this feature!");
+
+        if(!messageEventListenerAdded) {
+            window.addEventListener("message", receiveMessage, false);
+            messageEventListenerAdded = true;
+        }
+
+    }
+    function receiveMessage(event) {
+        $("#" + tempID).val(encodeURI(event.data));
+    }
+
+    if(document.getElementById('desc') != null)
+        LimtCharacters(document.getElementById('desc'),250,'charcount');
+
+    function LimtCharacters(txtMsg, CharLength, indicator) {
+        chars = txtMsg.value.length;
+        document.getElementById(indicator).innerHTML = CharLength - chars;
+        if (chars > CharLength) {
+            txtMsg.value = txtMsg.value.substring(0, CharLength);
+        }
+    }
+
+
+    /*]]>*/
+</script>
+</body>
+</html>

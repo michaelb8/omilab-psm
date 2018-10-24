@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <form id="Wstatusforms" method="POST" th:action="@{/settings/processWServices}">
+        <div class="modal-body">
+            <p th:utext="#{franchise.types.addWEndpoint.line1}">DESCRIPTION</p>
+            <div class="form-group" style="overflow-y: scroll; max-height:300px;">
+                <ul class="nav nav-pills nav-stacked" id="Wstatus" style="width:92%;float:left;">
+                    <li id="repo" role="presentation" class="ajaxclickable" th:classappend="${projecttype.wRepoStatus} ? active"><a th:text="#{general.wizard.repo}">REPO</a></li>
+                    <li id="role" role="presentation" class="ajaxclickable" th:classappend="${projecttype.wRoleStatus} ? active"><a th:text="#{general.wizard.permissions}">ROLESERVICE</a></li>
+                    <hr />
+                    <li th:each="item : ${services}" th:id="${item.id}" role="presentation" class="ajaxclickable" th:if="${#lists.contains(serviceusage, item)}" th:classappend="${#lists.contains(wusage, item)} ? active"><a th:text="${item.name}">Home</a></li>
+                </ul>
+                <button type="button" id="Crepo" class="btn btn-default Wclickable" aria-label="Left Align" style="float:left;margin-bottom:1.5%;">
+                    <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+                </button>
+                <button type="button" id="Crole" class="btn btn-default Wclickable" aria-label="Left Align" style="float:left;margin-bottom:8.5%;">
+                    <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+                </button>
+                <hr />
+                <button th:id="'C' + ${item.id}" th:each="item : ${services}" th:if="${#lists.contains(serviceusage, item)}" type="button" class="btn btn-default Wclickable" aria-label="Left Align" style="float:left;margin-bottom:1.5%;">
+                    <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" id="hiddenenabledwizard" name="enabled"/>
+            <input type="hidden" id="typeid" name="id" th:value="${projecttype.id}"/>
+            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.addWEndpoint.abort}">ABORT</button>
+            <button type="button" onclick="submitWizardStatus();" class="btn btn-primary" th:utext="#{franchise.types.addWEndpoint.confirm}">CONFIRM</button>
+        </div>
+    </form>
+
+</html>

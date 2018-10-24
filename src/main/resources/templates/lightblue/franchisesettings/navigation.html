@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <th:block th:fragment="tab">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" th:utext="#{franchise.navigation.title}">NAVIGATION</h3>
+            </div>
+            <div class="panel-body">
+                <p th:utext="#{franchise.navigation.description}">NAVIGATION DESCRIPTION</p>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span th:utext="#{franchise.navigation.buttoncaption}">NAVIGATION ELEMENT</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a data-toggle="modal" data-target="#addLink"  th:utext="#{franchise.navigation.type.link}">TYPE IMAGE</a></li>
+                        <li><a data-toggle="modal" data-target="#addHTML"  th:utext="#{franchise.navigation.type.html}">TYPE HTML</a></li>
+                        <li><a data-toggle="modal" data-target="#addProjectTypes"  th:utext="#{franchise.navigation.type.types}">TYPE HTML</a></li>
+                        <li><a data-toggle="modal" data-target="#addProject"  th:utext="#{franchise.navigation.type.project}">TYPE HTML</a></li>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#" style="margin-left:1%;" onclick="location.href='settings?view=editfooter';">
+                    <span th:utext="#{franchise.navigation.editfooter}">ELEMENT</span>
+                </button>
+            </div>
+        </div>
+
+        <div th:id="'order'+${navigationitem.id}" class="panel panel-default headerelement" th:each="navigationitem : ${navigationmenu}">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemLink'}" th:utext="#{franchise.navigation.type.link}" class="badge">Link</span>
+                    <span th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemTypes'}" th:utext="#{franchise.navigation.type.types}" class="badge">Type Collection</span>
+                    <span th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemHTML'}" th:utext="#{franchise.navigation.type.html}" class="badge">HTML</span>
+                    <span th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemProject'}" th:utext="#{franchise.navigation.type.project}" class="badge">Project</span>
+                    <span th:text="${navigationitem.displayname}">element title</span>  </h3>
+            </div>
+            <div class="panel-body">
+                <p><strong>URL:</strong> /<span th:utext="${navigationitem.link}"></span></p>
+                <ul class="franchise-button-list">
+                    <li>
+                        <button type="submit" class="btn btn-default btn-xs moveupNavigation"><span th:utext="#{franchise.navigation.up}"> MOVE UP</span>  <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>
+                        <input type="hidden" name="id" th:value="${navigationitem.id}" />
+                    </li>
+                    <li>
+                        <button type="submit" class="btn btn-default btn-xs movedownNavigation"> <span th:utext="#{franchise.navigation.down}"> MOVE DOWN</span>  <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
+                        <input type="hidden" name="id" th:value="${navigationitem.id}" />
+                    </li>
+                    <li th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemLink'}">
+                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#updateLink"> <span th:utext="#{franchise.navigation.edit.link}">Edit Link</span>  <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                        <input type="hidden" class="id" th:value="${navigationitem.id}" />
+                        <input type="hidden" class="name" th:value="${navigationitem.displayname}" />
+                        <input type="hidden" class="link" th:value="${navigationitem.link}" />
+                    </li>
+                    <li th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemHTML'}">
+                        <form method="get" th:action="@{/settings/editpage}">
+                            <button type="submit" class="btn btn-default btn-xs"> <span th:utext="#{franchise.navigation.edit.html}">Modify HTML</span>  <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                            <input type="hidden" name="id" class="id" th:value="${navigationitem.id}" />
+                            <input type="hidden" name="view" value="raw" />
+                        </form>
+                    </li>
+                    <li th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemHTML'}">
+                        <form method="get" th:action="@{/settings/editpage}">
+                            <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#updateHTML"> <span th:utext="#{franchise.navigation.edit.wysiswg}">Edit</span>  <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                            <input type="hidden" name="id" class="id" th:value="${navigationitem.id}" />
+                            <input type="hidden" name="view" value="editor" />
+                        </form>
+                    </li>
+                    <li th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemTypes'}">
+                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#updateTypes"> <span th:utext="#{franchise.navigation.edit.types}">Select project types</span>  <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                        <input type="hidden" class="id" th:value="${navigationitem.id}" />
+                        <input type="hidden" class="name" th:value="${navigationitem.displayname}" />
+                        <input type="hidden" class="link" th:value="${navigationitem.link}" />
+                        <input type="hidden" class="caption" th:value="${navigationitem.caption}" />
+                        <input type="hidden" class="label" th:value="${navigationitem.newprojectlabel}" />
+                    </li>
+                    <li th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemProject'}">
+                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#updateProject"> <span th:utext="#{franchise.navigation.edit.project}">Select project</span>  <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                        <input type="hidden" class="id" th:value="${navigationitem.id}" />
+                        <input type="hidden" class="name" th:value="${navigationitem.displayname}" />
+                        <input type="hidden" class="link" th:value="${navigationitem.link}" />
+                    </li>
+                    <li th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemHTML'}">
+                        <form th:action="@{/settings/processNavigationCarousel}" method="POST">
+                            <button type="submit" class="btn btn-default btn-xs" th:classappend="${navigationitem.carousel} ? active"><span th:utext="#{franchise.navigation.carousel}"> Carousel</span></button>
+                            <input type="hidden" name="id" th:value="${navigationitem.id}" />
+                        </form>
+                    </li>
+                    <li>
+                        <form th:action="@{/settings/processNavigationVisible}" method="POST">
+                            <button type="submit" class="btn btn-default btn-xs" th:classappend="${navigationitem.visible} ? active"><span th:utext="#{franchise.navigation.visible}"> Visible</span>  <span class="glyphicon glyphicon-off" aria-hidden="true"></span></button>
+                            <input type="hidden" name="id" th:value="${navigationitem.id}" />
+                        </form>
+                    </li>
+                    <li>
+                        <form th:action="@{/settings/processNavigationRemoval}" method="POST">
+                            <button type="submit" class="btn btn-default btn-xs"><span > Delete</span>  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                            <input type="hidden" name="id" th:value="${navigationitem.id}" />
+                        </form>
+                    </li>
+                    <li>
+                        <form th:action="@{/settings/processNavigationWizard}" method="POST" th:if="${navigationitem.class.name == 'org.omilab.psm.model.db.MainNavigationItemTypes'}">
+                            <button th:classappend="${navigationitem.newproject} ? active" class="btn btn-default btn-xs movedown" type="submit"> <span th:utext="#{franchise.navigation.toggleproject}"> NEW PROJECT</span> </button>
+                            <input type="hidden" class="id" name="id" th:value="${navigationitem.id}" />
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="addLink" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelAddLink" th:utext="#{franchise.navigation.addmni.title}">HEADER</h4>
+                    </div>
+                    <form method="POST" th:action="@{/settings/processMNILinkCreation}">
+                        <div class="modal-body">
+                            <p th:utext="#{franchise.navigation.addmni.link.desc}">DESCRIPTION</p>
+
+                            <label for="linkname" class="control-label" th:utext="#{franchise.navigation.addmni.link.name}">LINE1</label>
+                            <input type="text" class="form-control" id="addlinkname" name="name" />
+
+                            <label for="linkurl" class="control-label" th:utext="#{franchise.navigation.addmni.link.url}">LINE1</label>
+                            <input type="text" class="form-control" id="addlinkurl" name="url" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.navigation.addmni.abort}">ABORT</button>
+                            <button type="submit" class="btn btn-primary" th:utext="#{franchise.navigation.addmni.confirm}">CONFIRM</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="addHTML" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelAddHTML" th:utext="#{franchise.navigation.addmni.title}">HEADER</h4>
+                    </div>
+                    <form method="POST" th:action="@{/settings/processMNIHTMLCreation}">
+                        <div class="modal-body">
+                            <p th:utext="#{franchise.navigation.addmni.html.desc}">DESCRIPTION</p>
+
+                            <label for="htmlname" class="control-label" th:utext="#{franchise.navigation.addmni.html.name}">LINE1</label>
+                            <input type="text" class="form-control" id="htmlname" name="name" />
+
+                            <label for="htmlurl" class="control-label" th:utext="#{franchise.navigation.addmni.html.url}">LINE1</label>
+                            <input type="text" class="form-control" id="htmlurl" name="url" />
+
+                            <p th:utext="#{franchise.navigation.addmni.html.content}">LINE3</p>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.navigation.addmni.abort}">ABORT</button>
+                            <button type="submit" class="btn btn-primary" th:utext="#{franchise.navigation.addmni.confirm}">CONFIRM</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="addProjectTypes" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabel" th:utext="#{franchise.navigation.addmni.title}">HEADER</h4>
+                    </div>
+                    <form id="projecttypesform" method="POST" th:action="@{/settings/processMNIPTCreation}">
+                        <div class="modal-body">
+                            <p th:utext="#{franchise.navigation.addmni.pt.desc}">DESCRIPTION</p>
+
+                            <label for="ptname" class="control-label" th:utext="#{franchise.navigation.addmni.pt.name}">LINE</label>
+                            <input type="text" class="form-control" id="ptname" name="name" />
+
+                            <label for="pturl" class="control-label" th:utext="#{franchise.navigation.addmni.pt.url}">LINE</label>
+                            <input type="text" class="form-control" id="pturl" name="url" />
+
+                            <label for="ptcaption" class="control-label" th:utext="#{franchise.navigation.addmni.pt.caption}">LINE</label>
+                            <input type="text" class="form-control" id="ptcaption" name="caption" />
+
+                            <label for="ptlabel" class="control-label" th:utext="#{franchise.navigation.addmni.pt.label}">LINE</label>
+                            <input type="text" class="form-control" id="ptlabel" name="label" />
+
+                            <label class="control-label" th:utext="#{franchise.navigation.addmni.pt.pt}">LINE</label>
+                            <div class="form-group" style="overflow-y: scroll; max-height:300px;">
+                                <ul class="nav nav-pills nav-stacked" id="status">
+                                    <li th:each="item : ${projecttypes}" th:id="${item.id}" role="presentation"><a th:text="${item.name}">Home</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="hiddenenabled" name="enabled"/>
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.navigation.addmni.abort}">ABORT</button>
+                            <button onclick="submitStatus();" class="btn btn-primary" th:utext="#{franchise.navigation.addmni.confirm}">CONFIRM</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="addProject" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelproj" th:utext="#{franchise.navigation.addmni.title}">HEADER</h4>
+                    </div>
+                    <form id="projectform" method="POST" th:action="@{/settings/processMNIProjCreation}">
+                        <div class="modal-body">
+                            <p th:utext="#{franchise.navigation.addmni.pt.desc}">DESCRIPTION</p>
+
+                            <label for="projname" class="control-label" th:utext="#{franchise.navigation.addmni.proj.name}">LINE</label>
+                            <input type="text" class="form-control" id="projname" name="name" />
+
+                            <label for="projurl" class="control-label" th:utext="#{franchise.navigation.addmni.proj.url}">LINE</label>
+                            <input type="text" class="form-control" id="projurl" name="url" />
+
+                            <label class="control-label" th:utext="#{franchise.navigation.addmni.proj.proj}">LINE</label>
+                            <div class="form-group" style="overflow-y: scroll; max-height:300px;">
+                                <ul class="nav nav-pills nav-stacked" id="proj">
+                                    <li th:each="item : ${projects}" th:id="${item.id}" role="presentation" class="ajaxsingleclickable"><a th:text="${item.name}">Home</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="hiddenid" name="id"/>
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.navigation.addmni.abort}">ABORT</button>
+                            <button onclick="submitSingleStatus();" class="btn btn-primary" th:utext="#{franchise.navigation.addmni.confirm}">CONFIRM</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="updateLink" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelEditHeader" th:utext="#{franchise.navigation.addmni.title}">HEADER</h4>
+                    </div>
+                    <form method="POST" th:action="@{/settings/processMNILinkAdaption}">
+                        <div class="modal-body" id="edithtmlbody">
+                            <p th:utext="#{franchise.navigation.addmni.link.desc}">DESCRIPTION</p>
+
+                            <label for="linkname" class="control-label" th:utext="#{franchise.navigation.addmni.link.name}">LINE1</label>
+                            <input type="text" class="form-control" id="linkname" name="name" />
+
+                            <label for="linkurl" class="control-label" th:utext="#{franchise.navigation.addmni.link.url}">LINE1</label>
+                            <input type="text" class="form-control" id="linkurl" name="url" />
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="editlink" name="id" value="0" />
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.navigation.addmni.abort}">ABORT</button>
+                            <button type="submit" class="btn btn-primary" th:utext="#{franchise.navigation.addmni.confirm}">CONFIRM</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="updateTypes" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelupdatetype" th:utext="#{franchise.navigation.addmni.title}">HEADER</h4>
+                    </div>
+                    <form id="statusformpt" method="POST" th:action="@{/settings/processMNIPTAdaption}">
+                        <div class="modal-body">
+                            <p th:utext="#{franchise.navigation.addmni.pt.desc}">DESCRIPTION</p>
+
+                            <label for="ptupdatename" class="control-label" th:utext="#{franchise.navigation.addmni.pt.name}">LINE</label>
+                            <input type="text" class="form-control" id="ptupdatename" name="name" />
+
+                            <label for="ptupdateurl" class="control-label" th:utext="#{franchise.navigation.addmni.pt.url}">LINE</label>
+                            <input type="text" class="form-control" id="ptupdateurl" name="url" />
+
+                            <label for="ptupdatecaption" class="control-label" th:utext="#{franchise.navigation.addmni.pt.caption}">LINE</label>
+                            <input type="text" class="form-control" id="ptupdatecaption" name="caption" />
+
+                            <label for="ptupdatelabel" class="control-label" th:utext="#{franchise.navigation.addmni.pt.label}">LINE</label>
+                            <input type="text" class="form-control" id="ptupdatelabel" name="label" />
+
+                            <label class="control-label" th:utext="#{franchise.navigation.addmni.pt.pt}">LINE</label>
+                            <div id="ptResult" class="form-group" style="overflow-y: scroll; max-height:300px;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="hiddenenabledpt" name="enabled"/>
+                            <input type="hidden" id="ptupdateid" name="id"/>
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.addservice.abort}">ABORT</button>
+                            <button type="button" onclick="submitPT('statusformpt');" class="btn btn-primary" th:utext="#{franchise.types.addservice.confirm}">CONFIRM</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="updateProject" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelupdateproj" th:utext="#{franchise.navigation.addmni.title}">HEADER</h4>
+                    </div>
+                    <form id="statusproj" method="POST" th:action="@{/settings/processMNIProjAdaption}">
+                        <div class="modal-body">
+                            <p th:utext="#{franchise.navigation.addmni.pt.desc}">DESCRIPTION</p>
+
+                            <label for="projupdatename" class="control-label" th:utext="#{franchise.navigation.addmni.pt.name}">LINE</label>
+                            <input type="text" class="form-control" id="projupdatename" name="name" />
+
+                            <label for="projupdateurl" class="control-label" th:utext="#{franchise.navigation.addmni.pt.url}">LINE</label>
+                            <input type="text" class="form-control" id="projupdateurl" name="url" />
+
+                            <label class="control-label" th:utext="#{franchise.navigation.addmni.pt.pt}">LINE</label>
+                            <div id="projResult" class="form-group" style="overflow-y: scroll; max-height:300px;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="hiddenenabledproj" name="projid"/>
+                            <input type="hidden" id="projupdateid" name="id"/>
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.addservice.abort}">ABORT</button>
+                            <button type="button" onclick="submitProj('statusproj');" class="btn btn-primary" th:utext="#{franchise.types.addservice.confirm}">CONFIRM</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            function submitStatus(param) {
+                var ids = [];
+                $("#status").find(".active").each(function(){ ids.push(this.id); });
+                $( "#hiddenenabled").val(ids);
+                document.forms[param].submit();
+            }
+            function submitPT(param) {
+                var ids = [];
+                $("#statuspt").find(".active").each(function(){ ids.push(this.id); });
+                $( "#hiddenenabledpt").val(ids);
+                document.forms[param].submit();
+            }
+            function submitProj(param) {
+                var ids = [];
+                $("#statusproj").find(".active").each(function(){ ids.push(this.id); });
+                $( "#hiddenenabledproj").val(ids);
+                document.forms[param].submit();
+            }
+            function submitSingleStatus() {
+                var ids = [];
+                $("#proj").find(".active").each(function(){ ids.push(this.id); });
+                $( "#hiddenid").val(ids);
+                document.forms["projectform"].submit();
+            }
+        </script>
+    </th:block>
+
+</html>

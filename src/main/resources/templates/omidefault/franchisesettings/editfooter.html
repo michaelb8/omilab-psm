@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <th:block th:fragment="tab">
+
+        <form id="formular" method="POST" th:action="@{/settings/processFooterAdaption}">
+            <div class="form-group">
+                <input type="hidden" class="form-control" id="html" name="footer" />
+
+                <pre id="raw" style="display: none;" th:utext="${@GlobalConfigurationService.getValue('footer')}"></pre>
+                <div id="editor" ></div>
+
+                <button style="margin-top:1%;" type="button" onclick="send();" class="btn btn-primary" th:utext="#{franchise.navigation.editfooter.change}">CONFIRM</button>
+            </div>
+        </form>
+
+        <script th:src="@{/js/ace/ace.js}" type="text/javascript" charset="utf-8"></script>
+        <script>
+
+            function send() {
+                var htmlEditor = ace.edit("editor");
+                $( "#html").val(htmlEditor.getValue());
+                document.forms["formular"].submit();
+            }
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/twilight");
+            editor.setOptions({
+                maxLines: Infinity,
+                minLines: 30
+            });
+            editor.getSession().setMode("ace/mode/html");
+            editor.setValue($("#raw").html());
+
+        </script>
+
+    </th:block>
+
+</html>

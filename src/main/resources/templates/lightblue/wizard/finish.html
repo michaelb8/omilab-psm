@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+
+<head lang="en">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.wizard.finish}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" href="../../../static/css/font-awesome.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../../../static/css/bootstrap.css" />
+    <link rel="stylesheet" th:href="@{/css/omilab_lightblue.css}" href="../../../static/css/omilab_lightblue.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../../../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../../../static/js/respond.min.js"></script>
+    <script th:src="@{/js/jquery-1.9.1.min.js}" src="../../../static/js/jquery-1.9.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../../../static/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/omilab_lightblue.js}" src="../../../static/js/omilab_lightblue.js"></script>
+    <script th:src="@{/js/prettySocial.min.js}" src="../../../static/js/prettySocial.min.js"></script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+</head>
+
+<body>
+
+<div th:include="layout :: header"></div>
+
+<div th:include="layout :: navigation"></div>
+
+<div id="content" class="container padding" >
+
+    <div th:include="wizard/createproject :: wizmsg"></div>
+
+
+    <div class="panel panel-default" th:unless="${failed} == 'true'" style="float:left;width:100%;">
+        <div class="panel-heading">
+            <h3 class="panel-title" th:utext="#{wizard.finish}">FINISH PROJECT</h3>
+        </div>
+        <div class="panel-body">
+            <h1 th:utext="#{wizard.finish.title}">FINISH TITLE</h1>
+            <p th:utext="#{wizard.finish.line1}">LINE1</p>
+            <p> <span th:utext="#{wizard.finish.line2}">LINE2</span> <a target="_blank" th:href="${projectlink}" th:text="${projectlink}"></a></p>
+            <div class="row">
+                <div class="col-sm-2">
+                    <form th:action="@{/wizard/doPrevious}" method="get">
+                        <button type="submit" style="margin: 0; width: 100%;" id="previousbtn" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> <b th:utext="#{wizard.project.previous}">Previous</b></button>
+                        <input type="hidden" name="proposaluuid" th:value="${id}" />
+                    </form>
+                </div>
+                <div class="col-sm-3">
+                    <form method="get" th:action="@{/wizard/processFinish}">
+                        <button type="submit" style="margin: 0; width: 100%;" class="btn btn-primary"> <b th:utext="#{wizard.finish.confirm}">CONFIRM</b> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+                        <input type="hidden" name="proposaluuid" th:value="${id}"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div th:include="layout :: footer"></div>
+<script>
+    $( "#proposalNotification" ).hide();
+    $('#proposal-notification-placeholder').hide();
+</script>
+</body>
+</html>

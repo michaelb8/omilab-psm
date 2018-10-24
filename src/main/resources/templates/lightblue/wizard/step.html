@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+
+<head lang="en">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.wizard.step}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" href="../../../static/css/font-awesome.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../../../static/css/bootstrap.css" />
+    <link rel="stylesheet" th:href="@{/css/omilab_lightblue.css}" href="../../../static/css/omilab_lightblue.css"/>
+
+    <link rel="stylesheet" th:href="@{/css/jquery.tagit.css}" href="../../../static/css/jquery.tagit.css" />
+    <link rel="stylesheet" th:href="@{/css/tagit.ui-zendesk.css}" href="../../../static/css/tagit.ui-zendesk.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../../../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../../../static/js/respond.min.js"></script>
+
+    <script th:src="@{/js/jquery-1.9.1.min.js}" src="../../../static/js/jquery-1.9.1.min.js"></script>
+    <script th:src="@{/js/jquery-ui.min.js}" src="../../../static/js/jquery-ui.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../../../static/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/tag-it.min.js}" src="../../../static/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+    <script th:src="@{/js/omilab_lightblue.js}" src="../../../static/js/omilab_lightblue.js"></script>
+    <script th:src="@{/js/prettySocial.min.js}" src="../../../static/js/prettySocial.min.js"></script>
+    <script> $( "#proposalNotification" ).hide();
+    $('#proposal-notification-placeholder').hide(); </script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+</head>
+
+<body>
+
+<div th:include="layout :: header"></div>
+
+<div th:include="layout :: navigation"></div>
+
+<div id="content" class="container padding" >
+
+    <div th:include="wizard/createproject :: wizmsg"></div>
+
+    <div class="row">
+
+    <th:block th:fragment="wizardnavi" >
+        <div class="col-sm-3">
+            <ul class="wizard-nav-list">
+                <th:block th:each="item : ${wizardnavigation}">
+                    <li class="wizard-nav-item">
+                        <a class="wizard-nav-item-link" th:classappend="${item.active} ? wizard-nav-active">
+                            <i class="icon-dashboard"></i> <span th:utext="${item.name}">Home</span>
+                        </a>
+                    </li>
+                </th:block>
+            </ul>
+
+
+            <form th:action="@{/wizard/doNext}" method="get">
+                <button type="submit" id="proceedbtn" class="btn btn-primary"><b th:utext="#{wizard.project.next}">Proceed</b> <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span></button>
+                <input type="hidden" name="proposaluuid" th:value="${id}" />
+            </form>
+            <form th:action="@{/wizard/doPrevious}" method="get">
+                <button type="submit" id="previousbtn" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> <b th:utext="#{wizard.project.previous}">Previous</b></button>
+                <input type="hidden" name="proposaluuid" th:value="${id}" />
+            </form>
+        </div>
+
+    </th:block>
+
+
+
+        <div class="col-sm-9" th:unless="${failed} == 'true'">
+        <div th:include="layout :: messages"></div>
+
+            <th:block th:utext="${wrapper.content}"> WRAPPER CONTENT </th:block>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div th:include="layout :: footer"></div>
+<script>
+$( "#proposalNotification" ).hide();
+$("#proposal-notification-placeholder").hide();
+</script>
+
+</body>
+</html>

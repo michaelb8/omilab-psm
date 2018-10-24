@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+
+    <th:block th:fragment="tab">
+        <div class="panel panel-default" th:if="${pages.current} == 1">
+            <div class="panel-heading">
+                <h3 class="panel-title" th:utext="#{franchise.about.title}">ABOUT TITLE</h3>
+            </div>
+            <div class="panel-body">
+                <div style="float:left;margin-bottom:4%;">
+                    <h1 style="margin-bottom:5%;"><span th:text="${appname}">PSM</span></h1>
+                    <h3> <b th:utext="#{franchise.about.version}"> Version: </b> <span th:text="${appversion}">1.0</span></h3>
+                    <h4> <b th:utext="#{franchise.about.built}">Built on:</b> <span th:text="${appbuild}">010101 </span> </h4>
+                    <h4> <b th:utext="#{franchise.about.commit}">Commit:</b> <span th:text="${commit}">010101 </span> </h4>
+                </div>
+                <div style="clear: both;"></div>
+                <p>
+                    <b th:utext="#{franchise.about.jversion}"> Java version: </b> <span th:text="${javaversion}"> 1.7</span> <br />
+                    <b th:utext="#{franchise.about.jhome}"> Java home: </b> <span th:text="${javahome}"> 1.7</span> <br />
+                    <b th:utext="#{franchise.about.jvendor}"> Java vendor: </b> <span th:text="${javavendor}"> 1.7</span>
+                </p>
+                <p>
+                    <b th:utext="#{franchise.about.osarch}"> OS architecture: </b> <span th:text="${osarch}"> 1.7</span> <br />
+                    <b th:utext="#{franchise.about.osversion}"> OS version: </b> <span th:text="${osversion}"> 1.7</span> <br />
+                    <b th:utext="#{franchise.about.osname}"> OS name: </b> <span th:text="${osname}"> 1.7</span>
+                </p>
+                <p>
+                    <b th:utext="#{franchise.about.psmhome}"> PSM home: </b> <span th:text="${psmhome}"> 1.7</span> <br />
+                    <b th:utext="#{franchise.about.psmuser}"> PSM user: </b> <span th:text="${psmuser}"> 1.7</span>
+                </p>
+                <p>
+                    <b th:utext="#{franchise.about.usedmem}"> Used memory: </b> <span th:text="${usedmem}"> 1.7</span> <br />
+                    <b th:utext="#{franchise.about.freemem}"> Free memory: </b> <span th:text="${freemem}"> 1.7</span> <br />
+                    <b th:utext="#{franchise.about.totalmem}"> Total memory: </b> <span th:text="${totalmem}"> 1.7</span> <br />
+                    <b th:utext="#{franchise.about.maxmem}"> Max memory: </b> <span th:text="${maxmem}"> 1.7</span>
+                </p>
+            </div>
+        </div>
+    </th:block>
+
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+
+<head lang="en">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.404}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" href="../static/css/font-awesome.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../static/css/bootstrap.css" />
+    <link rel="stylesheet" th:href="@{/css/omilab.css}" href="../static/css/omilab.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../static/js/respond.min.js"></script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+</head>
+
+<body>
+
+<div th:include="layout :: header"></div>
+
+<div th:include="layout :: navigation"></div>
+
+<div id="content" class="container" >
+
+    <div th:include="layout :: messages"></div>
+
+    <h1 class="importantmessage" th:utext="#{general.404}"> 404 NOT FOUND</h1>
+
+</div>
+
+
+<div th:include="layout :: footer"></div>
+<script th:src="@{/js/jquery-1.9.1.min.js}" src="../static/js/jquery-1.9.1.min.js"></script>
+<script th:src="@{/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+<script th:src="@{/js/omilab.js}" src="../static/js/omilab.js"></script>
+<script th:src="@{/js/prettySocial.min.js}" src="../static/js/prettySocial.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+
+    <th:block th:fragment="tab">
+
+        <div th:if="${uerrorMessage}" class="alert alert-danger msgbox" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><b th:utext="#{general.layout.errorbox}">ERROR </b> <span th:utext="${uerrorMessage}"> </span></div>
+
+        <script th:if="${findOpen}">
+            $(document).ready(function(){$('#ppList').modal('show')});
+        </script>
+
+        <div class="modal fade" id="ppList" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                        <h4 class="modal-title" th:text="#{franchise.types.removal.proposals}"></h4>
+                    </div>
+                    <div class="modal-body" style="overflow-y: scroll; max-height:400px;">
+                        <ul>
+                            <li th:each="item : ${proposals}" role="presentation"><a style="cursor: pointer;" th:href="@{/settings(view='projecttypes',proposal=${item.id})}" th:text="${item.name}">Home</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{franchise.types.removal.close}">CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" th:utext="#{franchise.types.title}">CAROUSEL</h3>
+            </div>
+            <div class="panel-body">
+                <p th:utext="#{franchise.types.description}"> DESCRIPTION</p>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createProjectType" style="float:left;">
+                    <span th:utext="#{franchise.types.buttoncaption}">ELEMENT</span>
+                </button>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#" style="margin-left:1%; float:left;" onclick="location.href='settings?view=wizardglobal';">
+                    <span th:utext="#{franchise.types.buttonwizard}">ELEMENT</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="panel panel-default" th:each="type : ${projecttypes}">
+            <div class="panel-heading">
+                <h3 class="panel-title"> <span th:text="${type.name}">element title</span>  </h3>
+            </div>
+            <div class="panel-body">
+                <p th:utext="${type.description}"></p>
+                <section class="buttonpos">
+                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#addProject"><span th:utext="#{franchise.types.addprojectbtn}">ADD PROJECT</span>  <i class="fa fa-university"></i></button>
+
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                </section>
+                <section class="buttonpos">
+                    <button class="btn btn-default btn-xs movedown" data-toggle="modal" data-target="#addService"> <span th:utext="#{franchise.types.addendpointbtn}"> ADD SERVICE</span> <i class="fa fa-cloud"></i> </button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                </section>
+                <section class="buttonpos">
+                    <button class="btn btn-default btn-xs movedown" data-toggle="modal" data-target="#changeColor"> <span th:utext="#{franchise.types.forcecolor}"> force color</span>  <i class="fa fa-file"></i></button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                    <input type="hidden" class="backc" name="backc" th:value="${type.backgroundColor}" />
+                </section>
+                <form class="buttonpos" th:action="@{/settings/processProjectTypeFull}" method="POST">
+                    <button th:classappend="${type.fullPHeader} or ${type.reducedPHeader} ? active" class="btn btn-default btn-xs movedown" type="submit"> <span th:utext="#{franchise.types.fullheader}"> FULL</span> <i class="fa fa-bars"></i>
+                    </button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                </form>
+                <form class="buttonpos" th:action="@{/settings/processProjectTypeNavbar}" method="POST">
+                    <button th:classappend="${type.navigationBar} ? active" class="btn btn-default btn-xs movedown" type="submit"> <span th:utext="#{franchise.types.navbar}"> NAVBAR</span> <span class="glyphicon glyphicon-globe"></span>
+                    </button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                </form>
+                <section class="buttonpos">
+                    <button class="btn btn-default btn-xs movedown" data-toggle="modal" data-target="#editPTtileback"> <span th:utext="#{franchise.types.tilebg}"> TILE BACKGROUND</span> <i class="fa fa-picture-o"></i>
+                    </button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                    <input type="hidden" class="backt" name="backt" th:value="${type.backgroundTile}" />
+                </section>
+                <section class="buttonpos">
+                    <button class="btn btn-default btn-xs movedown" data-toggle="modal" data-target="#editPTtilefront"> <span th:utext="#{franchise.types.tilefg}"> TILE BACKGROUND</span> <i class="fa fa-picture-o"></i>
+                    </button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                    <input type="hidden" class="front" name="front" th:value="${type.foregroundTile}" />
+                </section>
+                <section class="buttonpos">
+                    <button class="btn btn-default btn-xs movedown" data-toggle="modal" data-target="#editProposals"> <span th:utext="#{franchise.types.proposals}"> PROPOSALS</span> (<b th:text="${@ProjectService.getNumberOfUnreadProposals(type)}">NUMBER OF UNREAD PROPOSALS</b>) <i class="fa fa-envelope"></i>
+                    </button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                </section>
+                <section class="buttonpos">
+                    <button class="btn btn-default btn-xs movedown" data-toggle="modal" data-target="#confWizard"> <span th:utext="#{franchise.types.wizard}"> WIZARD CONFIGURATION</span> <i class="fa fa-magic"></i>
+                    </button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                </section>
+                <form class="buttonpos" th:action="@{/settings}" method="GET">
+                    <button class="btn btn-default btn-xs movedown" type="submit"> <span th:utext="#{franchise.types.open}"> OPEN</span> <span class="glyphicon glyphicon-adjust"></span>
+                    </button>
+                    <input type="hidden" class="id" name="showOpen" th:value="${type.id}" />
+                    <input type="hidden" class="id" name="view" value="projecttypes" />
+                </form>
+                <section class="buttonpos" th:if="${#httpServletRequest.getParameter('expert') == 'true'}">
+                    <button class="btn btn-default btn-xs movedown" data-toggle="modal" data-target="#createOverlay"> <span th:utext="#{franchise.types.overlay}">PROJECT OVERLAY</span> <span class="glyphicon glyphicon-cd"></span>
+                    </button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                </section>
+                <form class="buttonpos" th:action="@{/settings/processProjectTypeRemoval}" method="POST">
+                    <button class="btn btn-default btn-xs movedown" type="submit"> <span th:utext="#{franchise.types.delete}"> DELETE</span> <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                    <input type="hidden" class="id" name="id" th:value="${type.id}" />
+                </form>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addProject" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelAddProject" th:utext="#{franchise.types.addproject.title}">HEADER</h4>
+                    </div>
+                    <form id="statusformp" method="POST" th:action="@{/settings/processProjectTypeProjects}">
+                        <div id="projectResult"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addService" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelAddService" th:utext="#{franchise.types.addservice.title}">HEADER</h4>
+                    </div>
+                    <form id="statusforms" method="POST" th:action="@{/settings/processProjectTypeServices}">
+                        <div id="serviceResult"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="confWizard" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelAddWizard" th:utext="#{franchise.types.addWEndpoint.title}">HEADER</h4>
+                    </div>
+                    <div id="serviceWizardResult"></div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="changeColor" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelChangeColor" th:utext="#{franchise.types.forcecolor.title}">HEADER</h4>
+                    </div>
+                    <form id="colorform" method="POST" th:action="@{/settings/processProjectTypeColorAdaption}">
+                        <div class="modal-body">
+                            <p th:utext="#{franchise.types.forcecolor.desc}"></p>
+                            <p><b id="colorInfo"></b></p>
+                            <div class="input-group bgcolor">
+                                <input type="text" value="#000000" class="form-control" id="color" name="color" />
+                                <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                                <input type="hidden" id="bgcolorid" name="id" />
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.forcecolor.abort}">ABORT</button>
+                            <button type="button" onclick="submitColor('unset');" class="btn btn-primary" th:utext="#{franchise.types.forcecolor.unset}">Unset</button>
+                            <button type="submit" class="btn btn-primary" th:utext="#{franchise.types.forcecolor.force}">Force</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="modal fade" id="createOverlay" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelAddWizard" th:utext="#{franchise.types.overlay.new}">HEADER</h4>
+                    </div>
+                    <div id="overlayResult"></div>
+                </div>
+            </div>
+        </div>
+
+
+    <div class="modal fade" id="createProjectType" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabelCreateProjectType" th:utext="#{franchise.types.addprojecttype.title}">HEADER</h4>
+                </div>
+                <form id="createPT" method="POST" th:action="@{/settings/processProjectTypeCreation}">
+                    <div class="modal-body">
+                        <label for="projecttypecreation" class="control-label" th:utext="#{franchise.types.addprojecttype.line1}">LINE1</label>
+                        <input type="text" class="form-control" id="projecttypecreation" name="name" />
+                        <label for="createPTdesc" class="control-label" th:utext="#{franchise.types.addprojecttype.line2}">LINE2</label>
+                        <textarea id="createPTdesc" class="form-control" name="description"> </textarea>
+                        <label for="createPTdesc" class="control-label" th:utext="#{franchise.types.addprojecttype.line3}">LINE3</label>
+                        <div class="form-group" style="overflow-y: scroll; max-height:300px;">
+                            <ul class="nav nav-pills nav-stacked" id="Wstatus" style="width:92%;float:left;">
+                                <li th:each="item : ${overlay}" th:id="${item}" role="presentation" class="ajaxsingleclickable" th:classappend="${item} == ${coverlay} ? active"><a th:text="${item}">MMProject</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="hiddenselected" name="overlay" />
+                        <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.addprojecttype.abort}">ABORT</button>
+                        <button type="button" onclick="submitNewPT();" class="btn btn-primary" th:utext="#{franchise.types.addprojecttype.confirm}">CONFIRM</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+        <div class="modal fade largemodal" id="editPTtileback" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelEditProjectTypeB" th:utext="#{franchise.types.tilebg.title}">HEADER</h4>
+                    </div>
+                    <form id="tileBform" method="POST" th:action="@{/settings/processProjectTypeBackAdaption}">
+                        <div class="modal-body">
+                            <label class="control-label" th:utext="#{franchise.types.tilebg.line1}">LINE1</label>
+                            <div id="editorb" ></div>
+                            <input id="editPTbackid" name="id" type="hidden" />
+                            <input id="editPTback" name="tilebackground" type="hidden" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.tilebg.abort}">ABORT</button>
+                            <button onclick="submitTileBack();" type="button" class="btn btn-primary" th:utext="#{franchise.types.tilebg.confirm}">CONFIRM</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade largemodal" id="editPTtilefront" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabelEditProjectTypeF" th:utext="#{franchise.types.tilefg.title}">HEADER</h4>
+                    </div>
+                    <form id="tileFform" method="POST" th:action="@{/settings/processProjectTypeFrontAdaption}">
+                        <div class="modal-body">
+                            <label class="control-label" th:utext="#{franchise.types.tilefg.line1}">LINE1</label>
+                            <div id="editorf" ></div>
+                            <input id="editPTfrontid" name="id" type="hidden" />
+                            <input id="editPTfront" name="tileforeground" type="hidden" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.tilebg.abort}">ABORT</button>
+                            <button onclick="submitTileFront();" type="button" class="btn btn-primary" th:utext="#{franchise.types.tilebg.confirm}">CONFIRM</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editProposals" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div id="proposalAjaxContent">
+            </div>
+        </div>
+
+
+        <script>
+            function submitServiceStatus() {
+                var ids = [];
+                $("#Sstatus").find(".active").each(function(){ ids.push(this.id); });
+                $( "#hiddenenabledservice").val(ids);
+                document.forms['statusforms'].submit();
+            }
+            function submitWizardStatus() {
+                var ids = [];
+                $("#Wstatus").find(".active").each(function(){ ids.push(this.id); });
+                $( "#hiddenenabledwizard").val(ids);
+                document.forms['Wstatusforms'].submit();
+            }
+            function submitProjectStatus() {
+                var ids = [];
+                $("#Pstatus").find(".active").each(function(){ ids.push(this.id); });
+                $( "#hiddenenabledproject").val(ids);
+                document.forms['statusformp'].submit();
+            }
+            function submitColor(param) {
+                if(param == "unset")
+                    $("#color").val("unset");
+                document.forms["colorform"].submit();
+            }
+            function submitInstantiationString() {
+                var htmlEditor = ace.edit("editor");
+                $( "#newJson").val(htmlEditor.getValue());
+                document.forms["instForm"].submit();
+            }
+            function unsetInstantiationString() {
+                $( "#newJson").val("null");
+                document.forms["instForm"].submit();
+            }
+            function submitOverlayStatus() {
+                $( "#hiddenenabledoverlay").val($( ".activated").text());
+                document.forms["Ostatusforms"].submit();
+            }
+            function submitTileBack() {
+                var htmlEditor = ace.edit("editorb");
+                $( "#editPTback").val(htmlEditor.getValue());
+                document.forms["tileBform"].submit();
+            }
+            function submitTileFront() {
+                var htmlEditor = ace.edit("editorf");
+                $( "#editPTfront").val(htmlEditor.getValue());
+                document.forms["tileFform"].submit();
+            }
+            function submitNewPT() {
+                $( "#hiddenselected").val($("#createPT").find(".active").text());
+                document.forms['createPT'].submit();
+            }
+
+
+        </script>
+    </th:block>
+
+</html>

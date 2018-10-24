@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+
+    <th:block th:fragment="projectheader">
+        <!-- # # # -->
+        <!-- Header for overlay mmproject -->
+        <!-- # # # -->
+        <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MMProject'}">
+            <div class="projectheader container" th:if="${project.projecttype.fullPHeader} == true">
+                <div class="row">
+                    <div class="col-sm-3 text-center">
+                        <img class="logo" src="../static/images/dummy/dummy.png"  th:src="${project.projectlogo}"/>
+                    </div>
+                    <div class="col-sm-7">
+                        <h2><!--/*<span th:text="${project.abbreviation}">Short</span> - */--><span th:text="${project.name}">Long Project Name</span></h2>
+                        <p><strong th:utext="#{project.keyword}">Keywords:</strong> <th:block th:each="keyword : ${keywords}"> <span th:text="${keyword.content}"> high context </span><span th:unless="${keyword.content} == ${keywords[#lists.size(keywords)-1].content}">,</span> </th:block></p>
+                        <p><strong th:utext="#{project.overlay.affiliation}">Affiliation:</strong> <span th:text="${project.affiliation}"> University of Dummy </span></p>
+                    </div>
+                    <div class="col-sm-2 project-share">
+                        <ul class="inline-list">
+                            <li><a href="#" data-type="twitter" th:attr="data-url=${@environment.getProperty('app.url')}, data-media=${project.projectlogo}" data-description="Visit OMiLAB!" data-via="omilab" class="prettySocial fa fa-twitter"></a></li>
+                            <li><a href="#" data-type="facebook" th:attr="data-url=${@environment.getProperty('app.url')}, data-media=${project.projectlogo}" data-title="OMiLAB" data-description="Visit OMiLAB!"  class="prettySocial fa fa-facebook"></a></li>
+                            <!--/*<li><a href="#" data-type="googleplus" th:attr="data-url=${@environment.getProperty('app.url')}, data-media=${project.projectlogo}" data-description="Visit OMiLAB!" class="prettySocial fa fa-google-plus"></a></li>*/-->
+                            <li><a href="#" data-type="linkedin" th:attr="data-url=${@environment.getProperty('app.url')}, data-media=${project.projectlogo}" data-title="OMiLAB" data-description="Visit OMiLAB!" class="prettySocial fa fa-linkedin"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+        <!-- # # # -->
+        <!-- Header for overlay mservicetool -->
+        <!-- # # # -->
+        <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MServiceTool'}">
+            <div class="projectheader container" th:if="${project.projecttype.fullPHeader} == true">
+                <div class="row">
+                    <div class="col-sm-3 text-center">
+                        <img class="logo" src="../static/images/dummy/dummy.png"  th:src="${project.projectlogo}"/>
+                    </div>
+                    <div class="col-sm-7">
+                        <h2><span th:text="${project.abbreviation}">Short</span> - <span th:text="${project.name}">Long Service Tool Name</span></h2>
+                        <p><strong th:utext="#{project.keyword}">Keywords:</strong> <th:block th:each="keyword : ${keywords}"> <span th:text="${keyword.content}"> high context </span><span th:unless="${keyword.content} == ${keywords[#lists.size(keywords)-1].content}">,</span> </th:block></p>
+                    </div>
+                    <div class="col-sm-2 project-share">
+                        <ul class="inline-list">
+                            <li><a href="#" data-type="twitter" th:attr="data-url=${@environment.getProperty('app.url')}, data-media=${project.projectlogo}" data-description="Visit OMiLAB!" data-via="omilab" class="prettySocial fa fa-twitter"></a></li>
+                            <li><a href="#" data-type="facebook" th:attr="data-url=${@environment.getProperty('app.url')}, data-media=${project.projectlogo}" data-title="OMiLAB" data-description="Visit OMiLAB!"  class="prettySocial fa fa-facebook"></a></li>
+                            <!--/*<li><a href="#" data-type="googleplus" th:attr="data-url=${@environment.getProperty('app.url')}, data-media=${project.projectlogo}" data-description="Visit OMiLAB!" class="prettySocial fa fa-google-plus"></a></li>*/-->
+                            <li><a href="#" data-type="linkedin" th:attr="data-url=${@environment.getProperty('app.url')}, data-media=${project.projectlogo}" data-title="OMiLAB" data-description="Visit OMiLAB!" class="prettySocial fa fa-linkedin"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+        <!-- # # # -->
+        <!-- Header for overlay event -->
+        <!-- # # # -->
+        <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.Event'}">
+            <div class="projectheader container" th:if="${project.projecttype.fullPHeader} == true">
+                <div class="row">
+                    <div class="col-sm-3 logo">
+                        <p><strong th:utext="#{project.overlay.start}">START</strong> <span th:if="${project.start}" th:text="${#calendars.format(project.start,'dd/MM/yyyy')}">1970</span></p>
+                        <p><strong th:utext="#{project.overlay.location}">LOCATION</strong> <span th:if="${project.location}" th:text="${project.location}">location</span></p>
+                        <p th:if="${project.homepage}"><strong th:utext="#{project.overlay.homepage}">homepage</strong> <a th:href="${project.homepage}" th:text="${project.homepage}"></a></p>
+                    </div>
+                    <div class="col-sm-7">
+                        <h2 th:text="${project.name}">Event Name</h2>
+                    </div>
+                    <div class="col-sm-2 project-share">
+                        <ul class="inline-list">
+                            <li><a href="#" data-type="twitter" th:attr="data-url=${@environment.getProperty('app.url')}" data-description="Visit OMiLAB!" data-via="omilab" class="prettySocial fa fa-twitter"></a></li>
+                            <li><a href="#" data-type="facebook" th:attr="data-url=${@environment.getProperty('app.url')}" data-title="OMiLAB" data-description="Visit OMiLAB!"  class="prettySocial fa fa-facebook"></a></li>
+                            <!--/*<li><a href="#" data-type="googleplus" th:attr="data-url=${@environment.getProperty('app.url')}" data-description="Visit OMiLAB!" class="prettySocial fa fa-google-plus"></a></li>*/-->
+                            <li><a href="#" data-type="linkedin" th:attr="data-url=${@environment.getProperty('app.url')}" data-title="OMiLAB" data-description="Visit OMiLAB!" class="prettySocial fa fa-linkedin"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+
+        <script>
+            $('.project-share ul li a').each(function(){ $(this).attr('data-url', window.location.href); });
+        </script>
+    </th:block>
+
+</html>

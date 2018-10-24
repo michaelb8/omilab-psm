@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <th:block th:fragment="tab">
+
+        <form method="post" th:action="@{/settings/processWizardGlobal}">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" th:utext="#{franchise.wizardconf.temp.accepted}">TEMPLATE ACCEPTED</h3>
+                </div>
+                <div class="panel-body">
+                    <p th:utext="#{franchise.wizardconf.temp.accepted.desc}">ACCEPTED EMAIL DESCRIPTION</p>
+                    <p th:utext="#{franchise.wizardconf.temp.accepted.allow}">ALLOWED VARIABLES EMAIL</p>
+                    <textarea name="templateaccepted" class="form-control" th:text="${wizard_accepted_template}" rows="8"></textarea>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" th:utext="#{franchise.wizardconf.temp.rejected}">TEMPLATE REJECTED</h3>
+                </div>
+                <div class="panel-body">
+                    <p th:utext="#{franchise.wizardconf.temp.rejected.desc}">REJECTED EMAIL DESCRIPTION</p>
+                    <p th:utext="#{franchise.wizardconf.temp.rejected.allow}">ALLOWED VARIABLES EMAIL</p>
+                    <textarea name="templaterejected" class="form-control" th:text="${wizard_rejected_template}" rows="8"></textarea>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 th:utext="#{franchise.wizardconf.temp.newproject}" class="panel-title">NOTIFICATION NEW PROJECTS</h3>
+                </div>
+                <div class="panel-body">
+                    <p th:utext="#{franchise.wizardconf.temp.newproject.desc}">NEW PROJECT DESCRIPTION</p>
+                    <input class="form-control" name="notificationnew" th:value="${wizard_notification_new}"/>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 th:utext="#{franchise.wizardconf.temp.finishedproject}" class="panel-title">NOTIFICATION PROJECT CREATION FINISHED</h3>
+                </div>
+                <div class="panel-body">
+                    <p th:utext="#{franchise.wizardconf.temp.finishedproject.desc}">FINISHED PROJECT DESCRIPTION</p>
+                    <input class="form-control" name="notificationfinish" th:value="${wizard_notification_finished}"/>
+                </div>
+            </div>
+            <button th:utext="#{franchise.wizardconf.submit}" type="submit" class="btn btn-primary">SUBMIT</button>
+        </form>
+    </th:block>
+
+</html>

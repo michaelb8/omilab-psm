@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.franchisesettings}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" href="../../../static/css/font-awesome.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../../../static/css/bootstrap.css" />
+    <link th:href="@{/css/bootstrap-colorpicker.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/omilab_lightblue.css}" href="../../../static/css/omilab_lightblue.css"/>
+    <link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" href="../../../static/css/jquery-ui.min.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../../../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../../../static/js/respond.min.js"></script>
+    <script th:src="@{/js/jquery-2.1.4.min.js}" src="../../../static/js/jquery-1.9.1.min.js"></script>
+    <script th:src="@{/js/jquery-ui.min.js}" src="../../../static/js/jquery-ui.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../../../static/js/bootstrap.min.js"></script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+</head>
+<body>
+
+    <div th:include="layout :: header"></div>
+
+    <div th:include="layout :: navigation"></div>
+
+    <div class="container padding">
+
+        <ul class="nav nav-tabs tabnavi">
+            <li role="presentation" th:class="${#httpServletRequest.getParameter('view') == null} ? 'active'" th:classappend="(${#httpServletRequest.getParameter('view') == 'navigation'} or ${#httpServletRequest.getParameter('view') == 'editfooter'}) ? 'active'">
+                <a href="" th:href="@{/settings(view=navigation)}" th:utext="#{franchise.navigation}">NAVIGATION</a>
+            </li>
+            <li role="presentation" th:classappend="( ${#httpServletRequest.getParameter('view') == 'projecttypes'} or ${#httpServletRequest.getParameter('view') == 'wizard'} or ${#httpServletRequest.getParameter('view') == 'wizardglobal'}) ? 'active'">
+                <a href="#" th:href="@{/settings(view=projecttypes)}" th:utext="#{franchise.types}">TYPES</a>
+            </li>
+            <li role="presentation" th:classappend="${#httpServletRequest.getParameter('view') == 'service'} ? 'active'">
+                <a href="" th:href="@{/settings(view=service)}" th:utext="#{franchise.service}">SERVICES</a>
+            </li>
+            <li role="presentation" th:classappend="${#httpServletRequest.getParameter('view') == 'order'} ? 'active'">
+                <a href="" th:href="@{/settings(view=order)}" th:utext="#{franchise.order}">PROJECT ORDER</a>
+            </li>
+            <li role="presentation" th:classappend="${#httpServletRequest.getParameter('view') == 'carousel'} ? 'active'">
+                <a href="#" th:href="@{/settings(view=carousel)}" th:utext="#{franchise.carousel}">HEADER</a>
+            </li>
+       <!--     <li role="presentation" th:classappend="${#httpServletRequest.getParameter('view') == 'franchises'} ? 'active'">
+                <a href="#" th:href="@{/settings(view=franchises)}" th:utext="#{franchise.franchises}">FRANCHISES</a>
+            </li> -->
+            <li role="presentation" th:classappend="${#httpServletRequest.getParameter('view') == 'about'} ? 'active'">
+                <a href="#" th:href="@{/settings(view=about)}" th:utext="#{franchise.about}">ABOUT</a>
+            </li>
+        </ul>
+
+
+        <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'navigation'} or ${#httpServletRequest.getParameter('view') == null}" th:include=" franchisesettings/navigation :: tab">
+        </div>
+
+        <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'carousel'}" th:include=" franchisesettings/carousel :: tab">
+        </div>
+
+        <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'projecttypes'}" th:include=" franchisesettings/projecttypes :: tab">
+        </div>
+
+        <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'wizardglobal'}" th:include=" franchisesettings/globalwizardconfig :: tab">
+        </div>
+
+        <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'editfooter'}" th:include=" franchisesettings/editfooter :: tab">
+        </div>
+
+        <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'order'}" th:include=" franchisesettings/order :: tab">
+        </div>
+
+        <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'franchises'}" th:include=" franchisesettings/franchise :: tab">
+        </div>
+
+        <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'about'}" th:include=" franchisesettings/about :: tab">
+        </div>
+
+        <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'service'}" th:include=" franchisesettings/services :: tab">
+        </div>
+
+
+    </div>
+
+    <div th:include="layout :: footer"></div>
+
+    <script th:src="@{/js/bootstrap-colorpicker.min.js}"></script>
+    <script th:src="@{/js/omilab_lightblue.js}" src="../../../static/js/omilab_lightblue.js"></script>
+    <script th:src="@{/js/prettySocial.min.js}" src="../../../static/js/prettySocial.min.js"></script>
+    <script th:src="@{/js/frsettings_lightblue.js}" src="../../../static/js/frsettings_lightblue.js"></script>
+    <script th:src="@{/js/ace/ace.js}" src="../../../static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+            var repourl = [[${@environment.getProperty("omilab.repository")}]];
+            var proposalNumber = [[${#httpServletRequest.getParameter('proposal')}]];
+        /*$(function(){
+            $('.bgcolor').colorpicker({ format: 'hex'});
+        }); */
+        /*]]>*/
+    </script>
+    <script type="text/javascript" th:if="${#httpServletRequest.getParameter('proposal') != null}">
+        $(window).load(function(){
+            $('#editProposals').modal('show');
+            $.get( "settings/ajaxProposal?id=" + proposalNumber, function( data ) {
+                $( "#proposalAjaxContent" ).html( data );
+            });
+
+        });
+    </script>
+</body>
+</html>

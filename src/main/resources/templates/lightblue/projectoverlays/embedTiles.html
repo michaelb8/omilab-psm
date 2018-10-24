@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="embedTiles">
+    <th:block th:each="project : ${projects}">
+
+        <th:block th:unless="${project.inConfig}">
+            <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MMProject'}">
+                <!--/* Tile handling for normal projects */-->
+                <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} == null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                    <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.backgroundColor} + ';'" class="flip-front ha">
+                        <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                        </div>
+                    </div>
+                    <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.backgroundColor} + ';'" class="flip-back ha"
+                         th:utext="${@ProjectService.getBackTileForProject(project)}">
+                    </div>
+                </div>
+                <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} != null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                    <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.projecttype.backgroundColor} + ';'" class="flip-front ha">
+                        <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                        </div>
+                    </div>
+                    <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.projecttype.backgroundColor} + ';'" class="flip-back ha"
+                         th:utext="${@ProjectService.getBackTileForProject(project)}">
+                    </div>
+                </div>
+            </th:block>
+            <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.Placeholder'}">
+                <!--/* Placeholder for better structure */-->
+                <h3 class="text-center" style="clear: both; margin: 0 auto; border-radius: 50%; width: 80px; height: 80px; line-height: 80px; background: #eff9ff; border: 1px solid #b0c7da; <!--/*float: left; margin: 115px 110px 0 110px;*/-->" th:utext="${project.text}">Placeholder</h3>
+            </th:block>
+            <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.Event'}">
+                <!--/* Tile handling for events */-->
+                <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} != null" class="live-tile ha two-tall two-wide" th:id="'tile_' + ${project.id}">
+                    <div th:id="'tile_' + ${project.abbreviation}" class="flip-front ha event-tile" th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                    </div>
+                </div>
+            </th:block>
+            <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MServiceTool'}">
+                <!--/* Tile handling for development tools */-->
+                <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} == null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                    <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.backgroundColor} + ';'" class="flip-front ha">
+                        <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                        </div>
+                    </div>
+                    <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.backgroundColor} + ';'" class="flip-back ha"
+                         th:utext="${@ProjectService.getBackTileForProject(project)}">
+                    </div>
+                </div>
+                <div th:unless="${project.inConfig} == true" th:if="${project.projecttype.backgroundColor} != null" class="live-tile flip ha two-tall two-wide bounce noselect fliptile" th:id="'tile_' + ${project.id}" data-delay="6000" data-mode="flip" data-bounce="true" data-direction="horizontal" style="" data-speed="1000" data-hoverout-delay="-1000">
+                    <div th:style="'transform: rotateY(0deg); transition: all 0s ease 0s; background-color: ' + ${project.projecttype.backgroundColor} + ';'" class="flip-front ha">
+                        <div th:class="'tile_' + ${project.abbreviation}"  th:utext="${@ProjectService.getFrontTileForProject(project)}">
+                        </div>
+                    </div>
+                    <div th:style="'transform: rotateY(540deg); transition: all 500ms ease 0s; background-color:' + ${project.projecttype.backgroundColor} + ';'" class="flip-back ha"
+                         th:utext="${@ProjectService.getBackTileForProject(project)}">
+                    </div>
+                </div>
+            </th:block>
+        </th:block>
+    </th:block>
+
+</th:block>
+
+<input class="realPageId" type="hidden" th:value="${realNumber}"></input>
+<input class="pageSize" type="hidden" th:value="${pageSize}"></input>
+</html>
+
+

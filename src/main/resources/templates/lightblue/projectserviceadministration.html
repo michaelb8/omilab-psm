@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.projectsettings}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" href="../../static/css/font-awesome.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../../static/css/bootstrap.css"/>
+    <link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" href="../../static/css/jquery-ui.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/omilab_lightblue.css}" href="../../static/css/omilab_lightblue.css"/>
+
+    <link rel="stylesheet" th:href="@{/css/jquery.tagit.css}" href="../../static/css/jquery.tagit.css" />
+    <link rel="stylesheet" th:href="@{/css/tagit.ui-zendesk.css}" href="../../static/css/tagit.ui-zendesk.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../../static/js/respond.min.js"></script>
+
+    <script th:src="@{/js/jquery-1.9.1.min.js}" src="../../static/js/jquery-1.9.1.min.js"></script>
+    <script th:src="@{/js/jquery-ui.min.js}" src="../../static/js/jquery-ui.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../../static/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/tag-it.min.js}" src="../../static/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+    <script th:src="@{/js/omilab_lightblue.js}" src="../../static/js/omilab_lightblue.js"></script>
+    <script th:src="@{/js/prettySocial.min.js}" src="../../static/js/prettySocial.min.js"></script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+
+</head>
+<body>
+
+    <div th:include="layout :: header"></div>
+
+    <div th:include="layout :: navigation"></div>
+
+    <div id="content" class="container" th:if="${project.inConfig} == true">
+        <h1 class="importantmessage" th:utext="#{wizard.project.inconfig}">INCONFIG!</h1>
+    </div>
+
+    <div th:if="${project.inConfig} == false and ${project.projecttype.fullPHeader} == true" th:include="projectoverlays/embedDisplay :: projectheader"></div>
+
+    <div id="content" class="container padding" th:if="${project.inConfig} == false">
+
+        <div class="row">
+            <div class="col-sm-3 project-navigation">
+                <ul class="project-nav-list">
+                    <th:block th:each="item : ${projectnavigation}">
+                        <li th:if="${item.enabled}" class="project-nav-item">
+                            <th:block th:unless="${item.url} == 'settings' or ${item.url} == 'role'">
+                                <a th:href="@{/content/{projecturl}/settings(projecturl=${project.urlidentifier},view=menu)}" href="#" class="control-button text-center">
+                                    <span class="glyphicon glyphicon-off"></span>
+                                </a>
+                                <a th:href="@{/content/{projecturl}/{serviceurl}/admin(projecturl=${project.urlidentifier},serviceurl=${item.urlidentifier},view=${item.endpoint})}" href="#" class="control-button text-center">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </a>
+                            </th:block>
+                            <a class="project-nav-item-link" th:href="'../' + ${item.url}" href="#" th:classappend="${item.active} ? project-nav-active">
+                                <span th:if="${item.name} == 'Settings' or ${item.name} == 'Roles'" class="badge bootstrapred bg-red">Admin</span> <span th:text="${item.name}">Home</span>
+                            </a>
+                        </li>
+                        <th:block th:if="${item.active} and ${item.enabled}" th:each="subitem : ${wrapper.submenu}">
+                            <li class="project-nav-item project-nav-subitem">
+                                <a class="project-nav-item-link project-nav-subitem-link" th:href="'#' + ${subitem.key}" href="#"><span th:text="${subitem.value}">Details</span></a>
+                            </li>
+                        </th:block>
+                    </th:block>
+                </ul>
+            </div>
+            <div class="col-sm-9">
+                <div id="projectcontent">
+
+
+
+                    <div class="tabcontent">
+                        <th:block th:utext="${wrapper.content}"> WRAPPER CONTENT </th:block>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div th:include="layout :: footer"></div>
+
+
+<script>
+    $('.project-share').hide();
+</script>
+</body>
+</html>

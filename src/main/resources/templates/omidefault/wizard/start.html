@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+
+<head lang="en">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.wizard.start}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" href="../static/css/font-awesome.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../static/css/bootstrap.css" />
+    <link rel="stylesheet" th:href="@{/css/omilab.css}" href="../static/css/omilab.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../static/js/respond.min.js"></script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+</head>
+
+<body>
+
+<div th:include="layout :: header"></div>
+
+<div th:include="layout :: navigation"></div>
+
+<div id="content" class="container" >
+
+    <div th:include="wizard/createproject :: wizmsg"></div>
+
+    <th:block th:unless="${failed} == 'true'" >
+            <div id="projectsidemenu" style="float:right;">
+                <div id="sidebar" class="list-group">
+                    <div id="leftCol">
+                        <th:block th:each="item : ${wizardnavigation}">
+                            <a class="list-group-item" th:classappend="${item.active} ? active">
+                                <i class="icon-dashboard"></i> <span th:utext="${item.name}">Home</span>
+                            </a>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+    </th:block>
+
+
+
+    <div class="panel panel-default" th:unless="${failed} == 'true'" style="float:left;width:75%;">
+        <div class="panel-heading">
+            <h3 class="panel-title" th:utext="#{wizard.welcome}">START PROJECT </h3>
+        </div>
+        <div class="panel-body">
+            <h1 th:utext="#{wizard.welcome.title}">TITLE</h1>
+            <p th:utext="#{wizard.welcome.line1}">LINE1</p>
+            <p th:utext="#{wizard.welcome.line2}">LINE2</p>
+            <p th:utext="#{wizard.welcome.line3}">LINE3</p>
+            <p th:utext="#{wizard.welcome.line5}">LINE5</p>
+            <ul>
+                <li th:each="item : ${servicenames}" th:text="${item}"></li>
+            </ul>
+            <p th:utext="#{wizard.welcome.line4}">LINE4</p>
+            <ul>
+                <li th:each="item : ${serviceendpoints}" th:text="${item}"></li>
+            </ul>
+
+            <form method="get" th:action="@{/wizard/doNext}">
+                <button type="submit" class="btn btn-primary" style="width:14%;"><b th:utext="#{wizard.welcome.start}">Start</b> <span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
+                <input type="hidden" name="proposaluuid" th:value="${id}"/>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+
+<div th:include="layout :: footer"></div>
+<script th:src="@{/js/jquery-1.9.1.min.js}" src="../static/js/jquery-1.9.1.min.js"></script>
+<script th:src="@{/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+<script th:src="@{/js/omilab.js}" src="../static/js/omilab.js"></script>
+<script th:src="@{/js/prettySocial.min.js}" src="../static/js/prettySocial.min.js"></script>
+<script> $( "#proposalNotification" ).hide(); </script>
+</body>
+</html>

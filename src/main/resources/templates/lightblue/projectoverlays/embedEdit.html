@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+
+<div th:fragment="eeContent">
+    <!--/*
+    # # #
+    Edit controls for overlay mmproject
+    # # #
+    */-->
+    <div th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MMProject'}">
+        <!--/* short description */-->
+        <div th:unless="${#httpServletRequest.getParameter('error') == 'true'}" class="form-group" th:if="${project.shortdescription}">
+            <label for="desc" th:utext="#{project.settings.configuration.description}">SHORT DESCRIPTION:</label>
+            <textarea data-validation="length" data-validation-length="5-250" id="desc" class="form-control" rows="2" name="shortdescription" th:text="${project.shortdescription}" onkeyup="LimtCharacters(this,250,'charcount');" th:placeholder="#{project.settings.configuration.description.placeholder}"></textarea>
+            <p> Remaining characters: <span id="charcount" style="color:grey;">250</span></p>
+        </div>
+        <div th:if="${#httpServletRequest.getParameter('error') == 'true'}" class="form-group">
+            <label for="desc" th:utext="#{project.settings.configuration.description}">SHORT DESCRIPTION:</label>
+            <textarea data-validation="length" data-validation-length="5-250" id="desc" class="form-control" rows="2" name="shortdescription" th:text="${session.wizshortdescription}" onkeyup="LimtCharacters(this,250,'charcount');" th:placeholder="#{project.settings.configuration.description.placeholder}"></textarea>
+            <p> Remaining characters: <span id="charcount" style="color:grey;">250</span></p>
+        </div>
+        <div class="form-group" th:unless="${project.shortdescription} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+            <label for="desc" th:utext="#{project.settings.configuration.description}">SHORT DESCRIPTION:</label>
+            <textarea data-validation="length" data-validation-length="5-250" id="desc" class="form-control" rows="2" name="shortdescription" onkeyup="LimtCharacters(this,250,'charcount');" th:placeholder="#{project.settings.configuration.description.placeholder}"></textarea>
+            <p> Remaining characters: <span id="charcount" style="color:grey;">250</span></p>
+        </div>
+        <!--/* affiliation */-->
+        <div class="form-group">
+            <label for="affiliation" th:utext="#{project.overlay.configuration.affiliation}">AFFILIATION:</label>
+            <input th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.affiliation} != null" data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="affiliation" name="affiliation" value="AFFILIATION" th:value="${project.affiliation}" th:placeholder="#{project.overlay.configuration.affiliation.placeholder}"/>
+            <input th:unless="${project.affiliation} != null or ${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="affiliation" name="affiliation" th:placeholder="#{project.overlay.configuration.affiliation.placeholder}"/>
+            <input th:if="${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="affiliation" name="affiliation" value="AFFILIATION" th:value="${session.wizaffiliation}" th:placeholder="#{project.overlay.configuration.affiliation.placeholder}"/>
+        </div>
+        <!--/* projectlogo and projectmodel */-->
+        <div class="form-group">
+            <label for="projectlogo" th:utext="#{project.settings.configuration.logo}">LOGO:</label>
+            <div class="input-group" th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.projectlogo} != null">
+                <input type="text" class="form-control" id="projectlogo" data-validation="length" data-validation-length="5-254" name="projectlogo" value="PROJECTLOGO" th:value="${project.projectlogo}" />
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browse">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group" th:if="${#httpServletRequest.getParameter('error') == 'true'}">
+                <input type="text" class="form-control" id="projectlogo" data-validation="length" data-validation-length="5-254" name="projectlogo" value="PROJECTLOGO" th:value="${session.wizprojectlogo}" />
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browse">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group" th:unless="${project.projectlogo} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                <input data-validation="length" data-validation-length="5-254" type="text" class="form-control" id="projectlogo" name="projectlogo"/>
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browse">BROWSE</button>
+                    </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="projectmodel" th:utext="#{project.settings.configuration.model}">MODEL:</label>
+            <div class="input-group" th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.projectmodel} != null">
+                <input type="text" class="form-control" id="projectmodel" data-validation="length" data-validation-length="5-254" name="projectmodel" value="PROJECTMODEL" th:value="${project.projectmodel}" />
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group" th:if="${#httpServletRequest.getParameter('error') == 'true'}">
+                <input type="text" class="form-control" id="projectmodel" data-validation="length" data-validation-length="5-254" name="projectmodel" value="PROJECTMODEL" th:value="${session.wizprojectmodel}" />
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group" th:unless="${project.projectmodel} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                <input data-validation="length" data-validation-length="5-254" type="text" class="form-control" id="projectmodel" name="projectmodel"/>
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+        </div>
+        <!--/* global network */-->
+        <div class="form-group">
+            <div class="radio">
+                <div class="input-group" th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.publishedglobally} != null">
+                    <p th:utext="#{project.overlay.configuration.globalnetwork}"></p>
+                    <label class="radio-inline"><input th:checked="${project.publishedglobally}" type="radio" name="publishedglobally" value="true"/>Yes</label>
+                    <label class="radio-inline"><input th:checked="!${project.publishedglobally}" type="radio" name="publishedglobally" value="false" />No</label>
+                </div>
+                <div class="input-group" th:unless="${project.publishedglobally} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                    <p th:utext="#{project.overlay.configuration.globalnetwork}"></p>
+                    <label class="radio-inline"><input type="radio" name="publishedglobally" value="true"/>Yes</label>
+                    <label class="radio-inline"><input type="radio" name="publishedglobally" value="false" />No</label>
+                </div>
+                <div class="input-group" th:if="${#httpServletRequest.getParameter('error') == 'true'}">
+                    <p th:utext="#{project.overlay.configuration.globalnetwork}"></p>
+                    <label class="radio-inline"><input th:checked="${session.wizpublishedglobally}" type="radio" name="publishedglobally" value="true"/>Yes</label>
+                    <label class="radio-inline"><input th:checked="!${session.wizpublishedglobally}" type="radio" name="publishedglobally" value="false" />No</label>
+                </div>
+            </div>
+        </div>
+        <!--/* release */-->
+        <div class="form-group">
+            <div class="radio">
+                <div class="input-group" th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.released} != null">
+                    <p th:utext="#{project.overlay.configuration.release}">Release?</p>
+                    <label class="radio-inline"><input id="rt" class="releasecheckbox" th:checked="${project.released}" type="radio" name="released" value="true"/>Yes</label>
+                    <label class="radio-inline"><input id="rf" class="releasecheckbox" th:checked="!${project.released}" type="radio" name="released" value="false" />No</label>
+                </div>
+                <div class="input-group" th:unless="${project.released} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                    <p th:utext="#{project.overlay.configuration.release}">Release?</p>
+                    <label class="radio-inline"><input id="rt" class="releasecheckbox" type="radio" name="released" value="true"/>Yes</label>
+                    <label class="radio-inline"><input id="rf" class="releasecheckbox" type="radio" name="released" value="false" />No</label>
+                </div>
+                <div class="input-group" th:if="${#httpServletRequest.getParameter('error') == 'true'}">
+                    <p th:utext="#{project.overlay.configuration.release}">Release?</p>
+                    <label class="radio-inline"><input id="rt" class="releasecheckbox" th:checked="${session.wizreleased}" type="radio" name="released" value="true"/>Yes</label>
+                    <label class="radio-inline"><input id="rf" class="releasecheckbox" th:checked="!${session.wizreleased}" type="radio" name="released" value="false" />No</label>
+                </div>
+            </div>
+        </div>
+        <!--/* officialdownloiad */-->
+        <div class="form-group">
+            <label class="downloadpub" for="officialdownload" th:utext="#{project.overlay.configuration.officialdownload}">DOWNLOAD:</label>
+            <div class="input-group downloadpub" th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.officialdownload} != null">
+                <input data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="officialdownload" name="officialdownload" value="officialdownload" th:value="${project.officialdownload}" th:placeholder="#{project.overlay.configuration.officialdownload.placeholder}"/>
+                <span class="input-group-btn">
+                        <button onclick="doBrowse('officialdownload');" class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group downloadpub" th:unless="${project.officialdownload} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                <input data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="officialdownload" name="officialdownload" th:placeholder="#{project.overlay.configuration.officialdownload.placeholder}"/>
+                <span class="input-group-btn">
+                        <button onclick="doBrowse('officialdownload');" class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group downloadpub" th:if="${#httpServletRequest.getParameter('error') == 'true'}">
+                <input data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="officialdownload" name="officialdownload" value="officialdownload" th:value="${session.wizofficialdownload}" th:placeholder="#{project.overlay.configuration.officialdownload.placeholder}"/>
+                <span class="input-group-btn">
+                        <button onclick="doBrowse('officialdownload');" class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+        </div>
+        <!--/* usermanual */-->
+        <div class="form-group">
+            <label class="downloadpub" for="usermanual" th:utext="#{project.overlay.configuration.usermanual}">USERMANUAL:</label>
+            <div class="input-group downloadpub" th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.usermanual} != null">
+                <input data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="usermanual" name="usermanual" value="usermanual" th:value="${project.usermanual}" th:placeholder="#{project.overlay.configuration.usermanual.placeholder}"/>
+                <span class="input-group-btn">
+                        <button onclick="doBrowse('usermanual');" class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group downloadpub" th:unless="${project.usermanual} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                <input data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="usermanual" name="usermanual" th:placeholder="#{project.overlay.configuration.usermanual.placeholder}"/>
+                <span class="input-group-btn">
+                        <button onclick="doBrowse('usermanual');" class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group downloadpub" th:if="${#httpServletRequest.getParameter('error') == 'true'}">
+                <input data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="usermanual" name="usermanual" value="usermanual" th:value="${session.wizusermanual}" th:placeholder="#{project.overlay.configuration.usermanual.placeholder}"/>
+                <span class="input-group-btn">
+                        <button onclick="doBrowse('usermanual');" class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+        </div>
+        <!--/* guidelines */-->
+        <div class="form-group">
+            <label class="downloadpub" for="guidelines" th:utext="#{project.overlay.configuration.guidelines}">guidelines:</label>
+            <div class="input-group downloadpub" th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.guidelines} != null">
+                <input data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="guidelines" name="guidelines" value="guidelines" th:value="${project.guidelines}" th:placeholder="#{project.overlay.configuration.guidelines.placeholder}"/>
+                <span class="input-group-btn">
+                        <button onclick="doBrowse('guidelines');" class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group downloadpub" th:unless="${project.guidelines} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                <input data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="guidelines" name="guidelines" th:placeholder="#{project.overlay.configuration.guidelines.placeholder}"/>
+                <span class="input-group-btn">
+                        <button onclick="doBrowse('guidelines');" class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+            <div class="input-group downloadpub" th:if="${#httpServletRequest.getParameter('error') == 'true'}">
+                <input data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="guidelines" name="guidelines" value="guidelines" th:value="${session.wizguidelines}" th:placeholder="#{project.overlay.configuration.guidelines.placeholder}"/>
+                <span class="input-group-btn">
+                        <button onclick="doBrowse('guidelines');" class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browsemodel">BROWSE</button>
+                    </span>
+            </div>
+        </div>
+        <!--/* deploymentenv */-->
+        <div class="form-group">
+            <label for="deploymentenv" th:utext="#{project.overlay.configuration.deploymentenv}">deploymentenv:</label>
+            <input th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.deploymentenv} != null" data-validation="length url" data-validation-length="5-100" type="text" class="form-control" id="guidelines" name="deploymentenv" value="deploymentenv" th:value="${project.deploymentenv}" th:placeholder="#{project.overlay.configuration.deploymentenv.placeholder}"/>
+            <input th:unless="${project.deploymentenv} != null or ${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length url" data-validation-length="5-100" type="text" class="form-control" id="deploymentenv" name="deploymentenv" th:placeholder="#{project.overlay.configuration.deploymentenv.placeholder}"/>
+            <input th:if="${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length url" data-validation-length="5-100" type="text" class="form-control" id="deploymentenv" name="deploymentenv" value="deploymentenv" th:value="${session.wizdeploymentenv}" th:placeholder="#{project.overlay.configuration.deploymentenv.placeholder}"/>
+        </div>
+
+
+
+    </div>
+    <!--/*
+    # # #
+    Edit controls for overlay event
+    # # #
+    */-->
+    <div th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.Event'}">
+        <!--/* short description */-->
+        <div class="form-group">
+            <div th:unless="${#httpServletRequest.getParameter('error') == 'true'}" class="form-group" th:if="${project.shortdescription} != null">
+                <label for="desc" th:utext="#{project.settings.configuration.description}">SHORT DESCRIPTION:</label>
+                <textarea data-validation="length" data-validation-length="5-250" id="desc" class="form-control" rows="2" name="shortdescription" th:text="${project.shortdescription}" onkeyup="LimtCharacters(this,250,'charcount');" th:placeholder="#{project.settings.configuration.description.placeholder}"></textarea>
+                <p> Remaining characters: <span id="charcount" style="color:grey;">250</span></p>
+            </div>
+            <div th:if="${#httpServletRequest.getParameter('error') == 'true'}" class="form-group">
+                <label for="desc" th:utext="#{project.settings.configuration.description}">SHORT DESCRIPTION:</label>
+                <textarea data-validation="length" data-validation-length="5-250" id="desc" class="form-control" rows="2" name="shortdescription" th:text="${session.wizshortdescription}" onkeyup="LimtCharacters(this,250,'charcount');" th:placeholder="#{project.settings.configuration.description.placeholder}"></textarea>
+                <p> Remaining characters: <span id="charcount" style="color:grey;">250</span></p>
+            </div>
+            <div class="form-group" th:unless="${project.shortdescription} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                <label for="desc" th:utext="#{project.settings.configuration.description}">SHORT DESCRIPTION:</label>
+                <textarea data-validation="length" data-validation-length="5-250" id="desc" class="form-control" rows="2" name="shortdescription" onkeyup="LimtCharacters(this,250,'charcount');" th:placeholder="#{project.settings.configuration.description.placeholder}"></textarea>
+                <p> Remaining characters: <span id="charcount" style="color:grey;">250</span></p>
+            </div>
+        </div>
+        <!--/* homepage */-->
+        <div class="form-group">
+            <label for="homepage" th:utext="#{project.overlay.configuration.homepage}">homepage:</label>
+            <input th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.homepage} != null" data-validation="length" data-validation-length="0-100" type="text" class="form-control" id="homepage" name="homepage" value="homepage" th:value="${project.homepage}" th:placeholder="#{project.overlay.configuration.homepage.placeholder}"/>
+            <input th:unless="${project.homepage} != null or ${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length" data-validation-length="0-100" type="text" class="form-control" id="homepage" name="homepage" th:placeholder="#{project.overlay.configuration.homepage.placeholder}"/>
+            <input th:if="${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length" data-validation-length="0-100" type="text" class="form-control" id="homepage" name="homepage" value="homepage" th:value="${session.wizhomepage}" th:placeholder="#{project.overlay.configuration.homepage.placeholder}"/>
+        </div>
+        <!--/* event start */-->
+        <div class="form-group">
+            <label for="startDate" th:utext="#{project.overlay.configuration.start}">STARTDATE:</label>
+            <input th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.start} != null" data-validation="date" data-validation-format="dd/mm/yyyy" type="text" class="form-control" id="startDate" name="start" th:value="${#calendars.format(project.start,'dd/MM/yyyy')}" th:placeholder="#{project.overlay.configuration.start.placeholder}"/>
+            <input th:unless="${project.start} != null or ${#httpServletRequest.getParameter('error') == 'true'}" data-validation="date" data-validation-format="dd/mm/yyyy" type="text" class="form-control" id="startDate" name="start" th:placeholder="#{project.overlay.configuration.start.placeholder}"/>
+            <input th:if="${#httpServletRequest.getParameter('error') == 'true'}" data-validation="date" data-validation-format="dd/mm/yyyy" type="text" class="form-control" th:value="${session.wizstart}" id="startDate" name="start" th:placeholder="#{project.overlay.configuration.start.placeholder}"/>
+        </div>
+        <!--/* event end */-->
+        <div class="form-group">
+            <label for="endDate" th:utext="#{project.overlay.configuration.end}">ENDDATE:</label>
+            <input th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.end} != null" data-validation="date" data-validation-format="dd/mm/yyyy" type="text" class="form-control" id="endDate" name="end" th:value="${#calendars.format(project.end,'dd/MM/yyyy')}" th:placeholder="#{project.overlay.configuration.end.placeholder}"/>
+            <input th:unless="${project.end} != null or ${#httpServletRequest.getParameter('error') == 'true'}" data-validation="date" data-validation-format="dd/mm/yyyy" type="text" class="form-control" id="endDate" name="end"  th:placeholder="#{project.overlay.configuration.end.placeholder}"/>
+            <input th:if="${#httpServletRequest.getParameter('error') == 'true'}" data-validation="date" data-validation-format="dd/mm/yyyy" type="text" class="form-control" id="endDate" name="end" th:value="${session.wizend}" th:placeholder="#{project.overlay.configuration.end.placeholder}"/>
+        </div>
+        <!--/* event location */-->
+        <div class="form-group">
+            <label for="location" th:utext="#{project.overlay.configuration.location}">LOCATION:</label>
+            <input th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.location} != null" data-validation="length" data-validation-length="5-254" type="text" class="form-control" id="location" name="location" th:value="${project.location}" th:placeholder="#{project.overlay.configuration.location.placeholder}"/>
+            <input th:unless="${project.location} != null or ${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length" data-validation-length="5-254" type="text" class="form-control" id="location" name="location"  th:placeholder="#{project.overlay.configuration.location.placeholder}"/>
+            <input th:if="${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length" data-validation-length="5-254" type="text" class="form-control" th:value="${session.wizlocation}" id="location" name="location" th:placeholder="#{project.overlay.configuration.location.placeholder}"/>
+        </div>
+    </div>
+    <!--/*
+    # # #
+    Edit controls for overlay service tools
+    # # #
+    */-->
+    <div th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MServiceTool'}">
+        <!--/* short description */-->
+        <div class="form-group">
+            <div th:unless="${#httpServletRequest.getParameter('error') == 'true'}" class="form-group" th:if="${project.shortdescription}">
+                <label for="desc" th:utext="#{project.settings.configuration.description}">SHORT DESCRIPTION:</label>
+                <textarea data-validation="length" data-validation-length="5-250" id="desc" class="form-control" rows="2" name="shortdescription" th:text="${project.shortdescription}" onkeyup="LimtCharacters(this,250,'charcount');" th:placeholder="#{project.settings.configuration.description.placeholder}"></textarea>
+                <p> Remaining characters: <span id="charcount" style="color:grey;">250</span></p>
+            </div>
+            <div th:if="${#httpServletRequest.getParameter('error') == 'true'}" class="form-group">
+                <label for="desc" th:utext="#{project.settings.configuration.description}">SHORT DESCRIPTION:</label>
+                <textarea data-validation="length" data-validation-length="5-250" id="desc" class="form-control" rows="2" name="shortdescription" th:text="${session.wizshortdescription}" onkeyup="LimtCharacters(this,250,'charcount');" th:placeholder="#{project.settings.configuration.description.placeholder}"></textarea>
+                <p> Remaining characters: <span id="charcount" style="color:grey;">250</span></p>
+            </div>
+            <div class="form-group" th:unless="${project.shortdescription} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                <label for="desc" th:utext="#{project.settings.configuration.description}">SHORT DESCRIPTION:</label>
+                <textarea data-validation="length" data-validation-length="5-250" id="desc" class="form-control" rows="2" name="shortdescription" onkeyup="LimtCharacters(this,250,'charcount');" th:placeholder="#{project.settings.configuration.description.placeholder}"></textarea>
+                <p> Remaining characters: <span id="charcount" style="color:grey;">250</span></p>
+            </div>
+        </div>
+        <!--/* link */-->
+        <div class="form-group">
+            <label for="link" th:utext="#{project.overlay.configuration.link}">LINK:</label>
+            <input th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.link} != null" data-validation="length" data-validation-length="5-300" type="text" class="form-control" id="link" name="link" value="Link" th:value="${project.link}" th:placeholder="#{project.overlay.configuration.link.placeholder}"/>
+            <input th:unless="${project.link} != null or ${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length" data-validation-length="5-300" type="text" class="form-control" id="link" name="link" th:placeholder="#{project.overlay.configuration.link.placeholder}"/>
+            <input th:if="${#httpServletRequest.getParameter('error') == 'true'}" data-validation="length" data-validation-length="5-100" type="text" class="form-control" id="link" name="link" value="LINK" th:value="${session.wizlink}" th:placeholder="#{project.overlay.configuration.link.placeholder}"/>
+        </div>
+        <!--/* projectlogo and projectmodel */-->
+        <div class="form-group">
+            <label for="projectlogo" th:utext="#{project.settings.configuration.logo}">LOGO:</label>
+            <div class="input-group" th:unless="${#httpServletRequest.getParameter('error') == 'true'}" th:if="${project.projectlogo} != null">
+                <input type="text" class="form-control" id="projectlogo" data-validation="length" data-validation-length="5-254" name="projectlogo" value="PROJECTLOGO" th:value="${project.projectlogo}" />
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browse">BROWSE</button>
+                </span>
+            </div>
+            <div class="input-group" th:if="${#httpServletRequest.getParameter('error') == 'true'}">
+                <input type="text" class="form-control" id="projectlogo" data-validation="length" data-validation-length="5-254" name="projectlogo" value="PROJECTLOGO" th:value="${session.wizprojectlogo}" />
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browse">BROWSE</button>
+                </span>
+            </div>
+            <div class="input-group" th:unless="${project.projectlogo} != null or ${#httpServletRequest.getParameter('error') == 'true'}">
+                <input data-validation="length" data-validation-length="5-254" type="text" class="form-control" id="projectlogo" name="projectlogo"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" th:utext="#{project.settings.configuration.browse}" id="browse">BROWSE</button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <!--/*
+    # # #
+    Edit controls for your overlay here
+    # # #
+    */-->
+
+
+</div>
+
+</html>

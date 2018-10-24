@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<form id="instForm" method="POST" th:action="@{/settings/processWInstantiation}">
+    <div class="modal-body">
+        <p th:utext="#{franchise.types.editWInstString.line1}">DESCRIPTION</p>
+        <pre id="raw" style="display: none;" th:utext="${jsoncontent}"></pre>
+        <div id="editor" ></div>
+
+    </div>
+    <div class="modal-footer">
+        <input type="hidden" id="newJson" name="json" />
+        <input type="hidden" id="typeid" name="typeid" th:value="${projecttype.id}"/>
+        <input type="hidden" id="dbid" name="dbid" th:value="${dbni}"/>
+        <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{franchise.types.addWEndpoint.abort}">ABORT</button>
+        <button type="button" onclick="unsetInstantiationString();" class="btn btn-primary" th:utext="#{franchise.types.editWInstString.unset}">UNSET</button>
+        <button type="button" onclick="submitInstantiationString();" class="btn btn-primary" th:utext="#{franchise.types.addWEndpoint.confirm}">CONFIRM</button>
+    </div>
+</form>
+
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/twilight");
+        editor.setOptions({
+            maxLines: Infinity
+        });
+        editor.getSession().setMode("ace/mode/json");
+        editor.setValue($("#raw").html());
+    </script>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.statichtml}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" href="../static/css/font-awesome.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../static/css/bootstrap.css"/>
+    <link rel="stylesheet" th:href="@{/css/omilab.css}" href="../static/css/omilab.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../static/js/respond.min.js"></script>
+
+    <script th:src="@{/js/jquery-1.9.1.min.js}" src="../static/js/jquery-1.9.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/omilab.js}" src="../static/js/omilab.js"></script>
+    <script th:src="@{/js/prettySocial.min.js}" src="../static/js/prettySocial.min.js"></script>
+
+    <style type="text/css" media="screen">
+        #editor {
+            height:700px;
+        }
+    </style>
+</head>
+<body>
+
+<div th:include="layout :: header"></div>
+
+<div th:include="layout :: navigation"></div>
+
+<div id="content" class="container" >
+
+    <div th:include="layout :: messages"></div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Edit</h3>
+        </div>
+        <div class="panel-body">
+            <form id="formular" method="POST" th:action="@{/settings/processMNIHTMLAdaption}">
+                <div class="form-group">
+                    <p th:utext="#{franchise.navigation.addmni.html.staticdesc}">DESCRIPTION</p>
+
+                    <label for="htmlname" class="control-label" th:utext="#{franchise.navigation.addmni.html.name}">LINE1</label>
+                    <input type="text" class="form-control" id="htmlname" name="name" th:value="${htmlelement.displayname}"/>
+
+                    <label for="htmlurl" class="control-label" th:utext="#{franchise.navigation.addmni.html.url}">LINE1</label>
+                    <input type="text" class="form-control" id="htmlurl" name="url" th:value="${htmlelement.link}" />
+                    <input type="hidden" class="form-control" id="html" name="html" />
+                    <input type="hidden" class="form-control" id="id" name="id" th:value="${htmlelement.id}"/>
+
+                    <button style="margin-top:1%;" type="button" onclick="send();" class="btn btn-primary" th:utext="#{franchise.navigation.addmni.change}">CONFIRM</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <th:block th:if="${#httpServletRequest.getParameter('view') == 'raw'}">
+        <pre id="raw" style="display: none;" th:utext="${htmlelement.html}"></pre>
+        <div id="editor" ></div>
+    </th:block>
+    <th:block th:if="${#httpServletRequest.getParameter('view') == 'editor'}">
+        <textarea name="ckedit" id="ckedit" rows="10" cols="80" th:utext="${htmlelement.html}">
+        </textarea>
+    </th:block>
+
+</div>
+
+<div th:include="layout :: footer"></div>
+<th:block th:if="${#httpServletRequest.getParameter('view') == 'raw'}">
+<script th:src="@{/js/ace/ace.js}" type="text/javascript" charset="utf-8"></script>
+<script>
+
+    function send() {
+        var htmlEditor = ace.edit("editor");
+        $( "#html").val(htmlEditor.getValue());
+        document.forms["formular"].submit();
+    }
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/twilight");
+    editor.setOptions({
+        maxLines: Infinity
+    });
+    editor.getSession().setMode("ace/mode/html");
+    editor.setValue($("#raw").html());
+
+</script>
+</th:block>
+<th:block th:if="${#httpServletRequest.getParameter('view') == 'editor'}">
+<script th:src="@{/js/ckeditor/ckeditor.js}" type="text/javascript" charset="utf-8"></script>
+<script th:inline="javascript">
+    function send() {
+        var html = CKEDITOR.instances.ckedit.getData();
+        $( "#html").val(html);
+        document.forms["formular"].submit();
+    }
+    var repourl = [[${@environment.getProperty("omilab.repository")}]];
+    CKEDITOR.replace( 'ckedit', {filebrowserBrowseUrl: repourl});
+</script>
+</th:block>
+
+</body>
+</html>

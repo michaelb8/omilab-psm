@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.projectcontent}">TITLE</title>
+
+    <link th:href="@{/css/font-awesome.min.css}" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../../static/css/bootstrap.css" />
+    <link th:href="@{/css/MetroJS.css}" href="../css/MetroJS.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" th:href="@{/css/omilab.css}" href="../../static/css/omilab.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../../static/js/respond.min.js"></script>
+
+    <script th:src="@{/js/jquery-1.9.1.min.js}" src="../../static/js/jquery-1.9.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../../static/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/MetroJs.min.js}" src="../js/MetroJs.min.js" type="text/javascript"></script>
+    <script th:src="@{/js/prettySocial.min.js}" src="../static/js/jquery.prettySocial.min.js"></script>
+    <script th:src="@{/js/omilab.js}" src="../../static/js/omilab.js"></script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+</head>
+<body>
+
+    <div th:include="layout :: header"></div>
+
+    <div th:include="layout :: navigation"></div>
+
+    <div id="content" class="container" th:if="${project.inConfig} == true">
+        <h1 class="importantmessage" th:utext="#{wizard.project.inconfig}">INCONFIG!</h1>
+    </div>
+
+    <div th:if="${project.inConfig} == false and ${project.projecttype.fullPHeader} == true" th:include="projectoverlays/embedDisplay :: projectheader"></div>
+
+    <div id="content" class="container" th:if="${project.inConfig} == false">
+
+        <th:block th:fragment="projectnavigation">
+            <th:block th:if="${project.projecttype.navigationBar} == true">
+                <div th:unless="${session.adminview} == true and ${#authorization.expression('hasPermission(#vars[''project''], ''projectadmin'')')}" id="projectsidemenu">
+                    <div id="sidebar" class="list-group">
+                        <div id="leftCol">
+                            <th:block th:each="item : ${projectnavigation}">
+                                <a th:if="${item.enabled}" th:href="${item.url}" th:unless=" ( ${item.url} == 'settings' or  ${item.url} == 'role') and not ${#authorization.expression('hasPermission(#vars[''project''], ''projectadmin'')')}" href="#" class="list-group-item" th:classappend="${item.active} ? active">
+                                    <i class="icon-dashboard"></i> <span th:text="${item.name}">Home</span> <span th:if="${item.name} == 'Settings' or ${item.name} == 'Roles'" class="badge bootstrapred">Admin</span>
+                                </a>
+                                <ul th:if="${item.active} and ${item.enabled}" th:each="subitem : ${wrapper.submenu}" class="nav nav-stacked sitemenu" id="sidebar">
+                                    <li><a th:href="'#' + ${subitem.key}" href="#"><span th:text="${subitem.value}">Details</span></a></li>
+                                </ul>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+
+
+            <div th:if="${session.adminview} == true and ${#authorization.expression('hasPermission(#vars[''project''], ''projectadmin'')')}" id="projectsidemenu" style="width:20% !important;">
+                <div id="sidebar" class="list-group">
+                    <div id="leftCol" style="float: left; width: 100%;">
+                        <th:block th:each="item : ${projectnavigation}">
+                            <a th:if="${item.enabled}" th:href="${item.url}" href="#" class="list-group-item" th:classappend="${item.active} ? active" style="width: 70%; float: left; clear: both;">
+                                <i class="icon-dashboard"></i> <span th:text="${item.name}">Home</span> <span th:if="${item.url} == 'settings' or ${item.url} == 'role'" class="badge bootstrapred">Admin</span>
+                            </a>
+                            <div th:if="${item.enabled}" th:unless="${item.url} == 'settings' or ${item.url} == 'role'" class="row" style="line-height: 41px; width: 30%; float: right;">
+                                <button onclick="doCall(this);" th:href="@{/content/{projecturl}/{serviceurl}/admin(projecturl=${project.urlidentifier},serviceurl=${item.urlidentifier},view=${item.endpoint})}" style="margin-left:5%;visibility: visible;" type="button" class="btn btn-default btn-xs el" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>
+                                <button onclick="doCall(this);" th:href="@{/content/{projecturl}/settings(projecturl=${project.urlidentifier},view=menu)}" style="visibility: visible;" type="button" class="btn btn-default btn-xs el" title="On/off"><span class="glyphicon glyphicon-off"></span></button>
+                            </div>
+                            <ul th:if="${item.active} and ${item.enabled}" th:each="subitem : ${wrapper.submenu}" class="nav nav-stacked sitemenu" id="sidebar">
+                                <li>
+                                    <a th:href="'#' + ${subitem.key}" href="#" style="width: 70%; float: left; clear: both;"><span th:text="${subitem.value}">Details</span></a>
+                                    <div class="row" style="line-height: 41px; width: 30%; float: right;">
+                                        <button onclick="doCall(this);" style="margin-left:5%;visibility: visible;" type="button" class="btn btn-default btn-xs el" title="Edit" th:href="@{/content/{projecturl}/{serviceurl}/admin(projecturl=${project.urlidentifier},serviceurl=${item.urlidentifier},view=${item.endpoint})}"><span class="glyphicon glyphicon-pencil"></span></button>
+                                        <button onclick="doCall(this);" style="visibility: visible;" type="button" class="btn btn-default btn-xs el" title="On/Off" th:href="@{/content/{projecturl}/settings(projecturl=${project.urlidentifier},view=menu)}"><span class="glyphicon glyphicon-off"></span></button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+
+        <div id="projectcontent" th:if="${project.projecttype.navigationBar} == true or (${session.adminview} == true and ${#authorization.expression('hasPermission(#vars[''project''], ''projectadmin'')')})">
+            <th:block th:utext="${wrapper.content}"> WRAPPER CONTENT </th:block>
+        </div>
+
+        <div id="projectcontent" style="width:100%;" th:unless="${project.projecttype.navigationBar} == true or (${session.adminview} == true and ${#authorization.expression('hasPermission(#vars[''project''], ''projectadmin'')')})">
+            <th:block th:utext="${wrapper.content}"> WRAPPER CONTENT </th:block>
+        </div>
+    </div>
+
+    <div th:include="layout :: footer"></div>
+</body>
+</html>

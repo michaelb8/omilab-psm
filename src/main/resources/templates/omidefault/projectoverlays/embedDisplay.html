@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+
+    <th:block th:fragment="projectheader">
+        <!-- # # # -->
+        <!-- Header for overlay mmproject -->
+        <!-- # # # -->
+        <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MMProject'}">
+            <div id="projectheader" class="container" th:if="${project.projecttype.fullPHeader} == true">
+                <div class="projectlogo">
+                    <img class="logo" src="../static/images/dummy/dummy.png"  th:src="${project.projectlogo}"/>
+                    <h1 class="shortitle" th:text="${project.abbreviation}"> NAME </h1>
+                </div>
+                <div class="projecttitle">
+                    <h1 class="longtitle" th:text="${project.name}"> Japanese Creative Services </h1>
+                    <p class="keywords"> <b th:utext="#{project.keyword}">KEYWORDS</b> <th:block th:each="keyword : ${keywords}"> <span th:text="${keyword.content}"> high context </span><span th:unless="${keyword.content} == ${keywords[#lists.size(keywords)-1].content}">,</span> </th:block></p>
+                    <p class="affiliation"> <b th:utext="#{project.overlay.affiliation}">AFFILIATION</b> <span th:text="${project.affiliation}"> University of Dummy </span> </p>
+                </div>
+            </div>
+            <div id="projectheader" class="container" th:if="${project.projecttype.reducedPHeader} == true">
+                <div class="projectlogo" style="margin-bottom:2%;">
+                    <img class="logo" src="../static/images/dummy/dummy.png"  th:src="${project.projectlogo}"/>
+                    <h1 class="shortitle"></h1>
+                </div>
+                <div class="projecttitle">
+                    <h1 class="longtitle" th:text="${project.name}"> NAME </h1>
+                </div>
+            </div>
+        </th:block>
+        <!-- # # # -->
+        <!-- Header for overlay mservicetool -->
+        <!-- # # # -->
+        <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.MServiceTool'}">
+            <div id="projectheader" class="container" th:if="${project.projecttype.fullPHeader} == true">
+                <div class="projectlogo">
+                    <img class="logo" src="../static/images/dummy/dummy.png"  th:src="${project.projectlogo}"/>
+                    <h1 class="shortitle" th:text="${project.abbreviation}"> NAME </h1>
+                </div>
+                <div class="projecttitle">
+                    <h1 class="longtitle" th:text="${project.name}"> Japanese Creative Services </h1>
+                    <p class="keywords"> <b th:utext="#{project.keyword}">KEYWORDS</b> <th:block th:each="keyword : ${keywords}"> <span th:text="${keyword.content}"> high context </span><span th:unless="${keyword.content} == ${keywords[#lists.size(keywords)-1].content}">,</span> </th:block></p>
+                </div>
+            </div>
+            <div id="projectheader" class="container" th:if="${project.projecttype.reducedPHeader} == true">
+                <div class="projectlogo" style="margin-bottom:2%;">
+                    <img class="logo" src="../static/images/dummy/dummy.png"  th:src="${project.projectlogo}"/>
+                    <h1 class="shortitle"></h1>
+                </div>
+                <div class="projecttitle">
+                    <h1 class="longtitle" th:text="${project.name}"> NAME </h1>
+                </div>
+            </div>
+        </th:block>
+        <!-- # # # -->
+        <!-- Header for overlay event -->
+        <!-- # # # -->
+        <th:block th:if="${project.class.name == 'org.omilab.psm.model.db.projectoverlay.Event'}">
+            <div id="projectheader" class="container" th:if="${project.projecttype.fullPHeader} == true">
+                <div class="projecttitle">
+                    <h1 class="longtitle" th:text="${project.name}"> NAME </h1>
+                    <p class="affiliation"> <b th:utext="#{project.overlay.start}">START</b> <span th:if="${project.start}" th:text="${#calendars.format(project.start,'dd/MM/yyyy')}"> 1970 </span> </p>
+                    <p class="affiliation"> <b th:utext="#{project.overlay.location}">LOCATION</b> <span th:if="${project.location}" th:text="${project.location}"> location </span> </p>
+                </div>
+            </div>
+        </th:block>
+    </th:block>
+
+</html>

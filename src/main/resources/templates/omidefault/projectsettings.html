@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}"/>
+    <title th:text="#{page.title.projectsettings}">TITLE</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" href="../../static/css/bootstrap.css"/>
+    <link rel="stylesheet" th:href="@{/css/datepicker.css}" href="../../static/css/datepicker.css"/>
+    <link rel="stylesheet" th:href="@{/css/omilab.css}" href="../../static/css/omilab.css"/>
+
+    <link rel="stylesheet" th:href="@{/css/jquery.tagit.css}" href="../../static/css/jquery.tagit.css" />
+    <link rel="stylesheet" th:href="@{/css/tagit.ui-zendesk.css}" href="../../static/css/tagit.ui-zendesk.css"/>
+
+    <script th:src="@{/js/html5shiv.min.js}" src="../../static/js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="../../static/js/respond.min.js"></script>
+
+    <th:block th:include="layout :: analytics"></th:block>
+
+</head>
+<body>
+
+    <div th:include="layout :: header"></div>
+
+    <div th:include="layout :: navigation"></div>
+
+
+    <div th:if="${project.inConfig} == false and ${project.projecttype.fullPHeader} == true" th:include="projectoverlays/embedDisplay :: projectheader"></div>
+
+    <div sec:authorize="hasPermission('franchise', 'franchiseadmin')" id="content" class="container">
+        <div class="panel panel-default" style="margin-left:35%;width:35%;">
+            <div class="panel-heading">
+                <h3 class="panel-title"> <span class="badge bootstrapred">Admin</span> <span th:text="#{franchise.project.settings}">Project administration</span></h3>
+            </div>
+            <div class="panel-body">
+                <div style="float:left;margin-top:1%;">
+                    <form method="post" th:action="@{/settings/processProjectRemoval}">
+                        <input type="hidden" name="projectid" th:value="${project.id}" />
+                        <button type="submit" class="btn btn-danger" aria-label="Left Align">
+                            <span th:utext="#{franchise.project.delete}"></span>
+                            <span th:text="${project.abbreviation}"></span>
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                    </form>
+                    <form method="post" th:action="@{/settings/processProjectVisibilityChange}" style="margin-top:5%;">
+                        <input type="hidden" name="projectid" th:value="${project.id}" />
+                        <button th:classappend="${project.inConfig} ? active" id="franchiseVisibility" class="btn btn-default" type="submit"><span th:utext="#{franchise.project.inconfig}"></span>  <span class="glyphicon glyphicon-off" aria-hidden="true"></span></button>
+                    </form>
+                </div>
+                <div class="form-group" style="float:right;width:50%;">
+                    <form method="post" th:action="@{/settings/processUrlChange}">
+                        <input type="hidden" name="projectid" th:value="${project.id}" />
+                        <label for="adminurlidentifier" th:utext="#{franchise.project.urlidentifier}">URLIDENTIFIER</label>
+                        <div class="input-group">
+                            <input data-validation="length alphanumeric" data-validation-length="2-25" type="text" class="form-control" name="urlidentifier" id="adminurlidentifier" th:value="${project.urlidentifier}"/>
+                                        <span class="input-group-btn">
+                                            <button id="updateURL" class="btn btn-default" type="submit" th:utext="#{franchise.project.updateurl}">UPDATE</button>
+                                        </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="content" class="container" th:if="${project.inConfig} == true">
+        <h1 class="importantmessage" th:utext="#{wizard.project.inconfig}">INCONFIG!</h1>
+    </div>
+
+    <div id="content" class="container" th:if="${project.inConfig} == false">
+
+        <div id="projectsidemenu" style="width:20% !important;">
+        <div id="sidebar" class="list-group">
+            <div id="leftCol" style="float: left; width: 100%;">
+                <th:block th:each="item : ${projectnavigation}">
+                    <a th:if="${item.enabled}" th:href="${item.url}" href="#" class="list-group-item" th:classappend="${item.active} ? active" style="width: 70%; float: left; clear: both;">
+                        <i class="icon-dashboard"></i> <span th:text="${item.name}">Home</span> <span th:if="${item.url} == 'settings' or ${item.url} == 'role'" class="badge bootstrapred">Admin</span>
+                    </a>
+                    <div th:if="${item.enabled}" th:unless="${item.url} == 'settings' or ${item.url} == 'role'" class="row" style="line-height: 41px; width: 30%; float: right;">
+                        <button onclick="doCall(this);" th:href="@{/content/{projecturl}/{serviceurl}/admin(projecturl=${project.urlidentifier},serviceurl=${item.urlidentifier},view=${item.endpoint})}" style="margin-left:5%;visibility: visible;" type="button" class="btn btn-default btn-xs el" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <button onclick="doCall(this);" th:href="@{/content/{projecturl}/settings(projecturl=${project.urlidentifier},view=menu)}" style="visibility: visible;" type="button" class="btn btn-default btn-xs el" title="On/off"><span class="glyphicon glyphicon-off"></span></button>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+        <div id="projectcontent">
+            <div th:if="${#httpServletRequest.getParameter('exists') == 'name'}" class="alert alert-danger msgbox" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><b th:utext="#{general.layout.errorbox}">ERROR </b> <span th:utext="#{wizard.error.exists.name}"> </span></div>
+            <div th:if="${#httpServletRequest.getParameter('exists') == 'abbr'}" class="alert alert-danger msgbox" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><b th:utext="#{general.layout.errorbox}">ERROR </b> <span th:utext="#{wizard.error.exists.abbr}"> </span></div>
+            <div>
+                <ul th:unless="${#httpServletRequest.getParameter('view') == null}" th:if="${#httpServletRequest.getParameter('view') == 'service'}"
+                    class="nav nav-tabs tabnavi">
+                    <li role="presentation">
+                        <a href="#" th:href="@{/content/{projecturl}/settings(view=config,projecturl=${project.urlidentifier})}" th:utext="#{project.settings.configuration}">CONFIGURATION</a>
+                    </li>
+                    <li role="presentation" class="active">
+                        <a href="#" th:href="@{/content/{projecturl}/settings(view=service,projecturl=${project.urlidentifier})}" th:utext="#{project.settings.servics}">SERVICES</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#" th:href="@{/content/{projecturl}/settings(view=menu,projecturl=${project.urlidentifier})}" th:utext="#{project.settings.menu}">MENU</a>
+                    </li>
+
+                </ul>
+            </div>
+            <div>
+                <ul th:unless="${#httpServletRequest.getParameter('view') == null}"
+                    th:if="${#httpServletRequest.getParameter('view') == 'menu'}" class="nav nav-tabs tabnavi">
+                    <li role="presentation">
+                        <a href="#" th:href="@{/content/{projecturl}/settings(view=config,projecturl=${project.urlidentifier})}" th:utext="#{project.settings.configuration}">CONFIGURATION</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#" th:href="@{/content/{projecturl}/settings(view=service,projecturl=${project.urlidentifier})}" th:utext="#{project.settings.servics}">SERVICES</a>
+                    </li>
+                    <li role="presentation" class="active">
+                        <a href="#" th:href="@{/content/{projecturl}/settings(view=menu,projecturl=${project.urlidentifier})}" th:utext="#{project.settings.menu}">MENU</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul
+                    th:if="${#httpServletRequest.getParameter('view') == 'config'} or ${#httpServletRequest.getParameter('view') == null}" class="nav nav-tabs tabnavi">
+                    <li role="presentation" class="active">
+                        <a href="#" th:href="@{/content/{projecturl}/settings(view=config,projecturl=${project.urlidentifier})}" th:utext="#{project.settings.configuration}">CONFIGIRATION</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#" th:href="@{/content/{projecturl}/settings(view=service,projecturl=${project.urlidentifier})}" th:utext="#{project.settings.servics}">SERVICES</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#" th:href="@{/content/{projecturl}/settings(view=menu,projecturl=${project.urlidentifier})}" th:utext="#{project.settings.menu}">MENU</a>
+                    </li>
+                </ul>
+            </div>
+
+
+            <th:block th:each="validationMessage : ${validationMessages}">
+                <div class="alert alert-danger" role="alert" style="margin-top:2%;"><span th:text="${validationMessage}"> </span></div>
+            </th:block>
+
+            <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'service'}">
+
+                <div th:each="service : ${services}" class="panel panel-default" th:if="${@ServiceManagementService.checkServiceAvailability(project.id,service.id)}">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" th:text="${service.name}">Servicename</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            <b th:utext="#{project.settings.service.url}"> URL:</b> <span th:text="${service.url}"> http://localhost:8183/ </span>
+                        </p>
+                        <p>
+                            <b th:utext="#{project.settings.service.developer}"> DEVELOPER:</b> <span th:text="${service.developer}"> OMiLAB </span>
+                        </p>
+                        <p>
+                            <b th:utext="#{project.settings.service.description}"> DESCRIPTION:</b> <span th:text="${service.description}">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. </span>
+                        </p>
+                        <p>
+                            <div style="float:left;">
+                                <form th:unless="${#lists.contains(subscribed, service)}" style="margin-left:4%;" method="POST" th:action="@{/content/{projecturl}/settings/processServiceInstantiation(projecturl=${project.urlidentifier})}">
+                                    <button type="submit" class="btn btn-default  btn-xs" th:utext="#{project.settings.service.subscribe}">Subscribe</button>
+                                    <input type="hidden" name="id" th:value="${service.id}" />
+                                </form>
+                                <div style="margin-left:4%;" th:if="${#lists.contains(subscribed, service)}">
+                                    <button type="submit" class="btn btn-default  btn-xs" data-toggle="modal" data-target="#deleteConfirm"> <span th:utext="#{project.settings.service.remove}" >Remove</span> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                    <input type="hidden" name="id" th:value="${service.id}" />
+                                </div>
+                            </div>
+                            <th:block th:if="${#lists.contains(subscribed, service)}">
+                                <div class="dropdown"  style="margin-left:8%;">
+                                    <button class="btn btn-default dropdown-toggle btn-xs" type="button" id="adminDropDown" data-toggle="dropdown" aria-expanded="true">
+                                        <span th:utext="#{project.settings.service.admin}">ADMINISTRATION</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="adminEndpoint">
+                                        <th:block th:if="${@ServiceManagementService.checkEndpointAvailability(project.id,menu.id)}" th:each="menu : ${service.servicenavigationitems}">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" th:text="${menu.name}" th:href="@{/content/{projecturl}/{serviceurl}/admin(projecturl=${project.urlidentifier},serviceurl=${service.urlidentifier},view=${menu.endpoint})}">Endpoint</a></li>
+                                        </th:block>
+
+                                    </ul>
+                                </div>
+                            </th:block>
+                        </p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <nav>
+                        <ul class="pagination">
+                            <li th:if="${pages.current} == 1" class="disabled">
+                                <a href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li th:unless="${pages.current} == 1">
+                                <a th:href="@{/content/{projecturl}/settings(view=service,page=${pages.previous},projecturl=${project.urlidentifier})}"
+                                   href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li th:each="pageNumber : ${pages.pagesList}">
+                                <a href="#" th:href="@{/content/{projecturl}/settings(view=service,page=${pageNumber},projecturl=${project.urlidentifier})}" th:text="${pageNumber}"></a>
+                            </li>
+                            <li th:if="${pages.current} == ${pages.end} or ${pages.end} == 0" class="disabled">
+                                <a href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li th:unless="${pages.current} == ${pages.end} or ${pages.end} == 0">
+                                <a th:href="@{/content/{projecturl}/settings(view=service,page=${pages.next},projecturl=${project.urlidentifier})}" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+
+            <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'config'} or ${#httpServletRequest.getParameter('view') == null}">
+
+                <div th:if="${#httpServletRequest.getParameter('ferror') == 'true'}" class="alert alert-danger msgbox" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><b th:utext="#{general.layout.errorbox}">ERROR </b> <span th:utext="#{project.settings.configuration.error}"> </span></div>
+
+                <div class="panel panel-default" th:unless="${#httpServletRequest.getParameter('error') == 'true'}">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" th:utext="#{project.settings.configuration.title}">BOXTITLE</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="projecttypeinfo" th:utext="#{project.settings.configuration.typeinfo}">TYPEINFO:</label>
+                            <input type="text" class="form-control" id="projecttypeinfo" th:value="${project.projecttype.name}" readonly="readonly"/>
+                        </div>
+                        <form method="POST" th:action="@{/content/{project}/settings/processConfigAdaption(project=${project.urlidentifier})}">
+                            <div class="form-group" >
+                                <label for="name" th:utext="#{project.settings.configuration.name}">NAME:</label>
+                                <input type="text" data-validation="length" data-validation-length="4-140" class="form-control" id="name" name="name" value="PROJECTNAME" th:value="${project.name}" th:placeholder="#{project.settings.configuration.name.placeholder}"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="abbreviation" th:utext="#{project.settings.configuration.abbreviation}">ABBREVIATION:</label>
+                                <input type="text" data-validation="length" data-validation-length="2-8" class="form-control" id="abbreviation" name="abbreviation" value="ABBREVIATION" th:value="${project.abbreviation}"  th:placeholder="#{project.settings.configuration.abbreviation.placeholder}"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="urlidentifier" th:utext="#{project.settings.configuration.urlidentifier}">URLIDENTIFIER:</label>
+                                <input type="text" class="form-control" id="urlidentifier" name="urlidentifier" value="URLIDENTIFIER" th:value="${project.urlidentifier}" readonly="readonly"/>
+                            </div>
+                            <div class="form-group">
+                                <input name="tags" id="keywordshidden" th:value="${projectkeywords}" value="" type="hidden" />
+                                <label for="keywords" th:utext="#{project.settings.configuration.keywords}">KEYWORDS</label>
+                                <ul id="keywords"></ul>
+                            </div>
+                            <div th:include="projectoverlays/embedEdit :: eeContent"></div>
+                            <button type="submit" class="btn btn-default" > <span th:utext="#{project.settings.configuration.save}" >Save </span> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+                        </form>
+
+                    </div>
+                </div>
+            <div class="panel panel-default" th:if="${#httpServletRequest.getParameter('error') == 'true'}">
+                <div class="panel-heading">
+                    <h3 class="panel-title" th:utext="#{project.settings.configuration.title}">BOXTITLE</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="projecttypeinfo" th:utext="#{project.settings.configuration.typeinfo}">TYPEINFO:</label>
+                        <input type="text" class="form-control" id="projecttypeinfo" th:value="${project.projecttype.name}" readonly="readonly"/>
+                    </div>
+                    <form method="POST" th:action="@{/content/{project}/settings/processConfigAdaption(project=${project.urlidentifier})}">
+                        <div class="form-group" >
+                            <label for="name" th:utext="#{project.settings.configuration.name}">NAME:</label>
+                            <input type="text" data-validation="length" data-validation-length="4-140" class="form-control" id="name" name="name" value="PROJECTNAME" th:value="${session.wizname}" th:placeholder="#{project.settings.configuration.name.placeholder}"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="abbreviation" th:utext="#{project.settings.configuration.abbreviation}">ABBREVIATION:</label>
+                            <input type="text" data-validation="length" data-validation-length="2-8" class="form-control" id="abbreviation" name="abbreviation" value="ABBREVIATION" th:value="${session.wizabbreviation}"  th:placeholder="#{project.settings.configuration.abbreviation.placeholder}"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="urlidentifier" th:utext="#{project.settings.configuration.urlidentifier}">URLIDENTIFIER:</label>
+                            <input type="text" class="form-control" id="urlidentifier" name="urlidentifier" value="URLIDENTIFIER" th:value="${session.wizurlidentifier}" readonly="readonly"/>
+                        </div>
+                        <div class="form-group">
+                            <input name="tags" id="keywordshidden" th:value="${session.wiztags}" value="" type="hidden" />
+                            <label for="keywords" th:utext="#{project.settings.configuration.keywords}">KEYWORDS</label>
+                            <ul id="keywords"></ul>
+                        </div>
+                        <div th:include="projectoverlays/embedEdit :: eeContent"></div>
+                        <button type="submit" class="btn btn-default" > <span th:utext="#{project.settings.configuration.save}" >Save </span> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+            <div class="tabcontent" th:if="${#httpServletRequest.getParameter('view') == 'menu'}">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" th:utext="#{project.settings.menu.title}">MENUBOX</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p th:utext="#{project.settings.menu.description}"> </p>
+                        <div class="form-group">
+                            <ul class="nav nav-pills nav-stacked" id="status">
+                                <th:block th:each="item : ${projectitems}">
+                                    <li th:id="${item.id}" th:unless="${item.name} == 'Settings'" role="presentation" th:class="${item.mandatory}? disabled + ' clickable'" th:classappend="${#lists.contains(projectitemsenabled, item)} ? active"><a><span th:text="${item.name}" >HOME</span>&nbsp;<i style="font-size:60%;" th:text="${item.servicedefinition.name}"></i></a></li>
+                                </th:block>
+                            </ul>
+                        </div>
+                        <form name="statusform" method="POST" th:action="@{/content/{project}/settings/processMenuStatus(project=${project.urlidentifier})}">
+                            <input type="hidden" value="" id="hiddenenabled" name="enabled" />
+                            <button style="margin-top:2%;" type="button" class="btn btn-default" onclick="submitStatus();"> <span th:utext="#{project.settings.menu.save}">SAVE</span> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:include="layout :: footer"></div>
+
+    <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close abortbtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabel" th:utext="#{project.settings.securityquestioncaption}">HEADING</h4>
+                </div>
+                <div class="modal-body">
+                    <p th:utext="#{project.settings.securityquestionline1}">LINE1</p>
+                    <p style="margin-top:7%;" th:utext="#{project.settings.securityquestionline2}">LINE2</p>
+                    <label for="conftext" class="control-label" th:utext="#{project.settings.securityquestionline3}">LINE3</label>
+                    <input type="text" class="form-control" id="conftext" />
+                </div>
+                <div class="modal-footer">
+                    <form method="POST" th:action="@{/content/{projecturl}/settings/processServiceRemoval(projecturl=${project.urlidentifier})}">
+                        <input type="hidden" name="id" id="modalid" />
+                        <button type="button" class="btn btn-default abortbtn" data-dismiss="modal" th:utext="#{project.settings.securityquestionabort}">ABORT</button>
+                        <button type="submit" id="confbtn" class="btn btn-primary"> <span th:utext="#{project.settings.securityquestionconfirm}">CONFIRM</span> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/jquery-1.9.1.min.js}" src="../../static/js/jquery-1.9.1.min.js"></script>
+    <script th:src="@{/js/jquery-ui.min.js}" src="../../static/js/jquery-ui.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../../static/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/tag-it.min.js}" src="../../static/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+    <script th:src="@{/js/prettySocial.min.js}" src="../../static/js/prettySocial.min.js"></script>
+    <script th:src="@{/js/validator.js}" src="../../static/js/validator.js"></script>
+    <script th:src="@{/js/datepicker.js}" src="../../static/js/datepicker.js"></script>
+    <script th:src="@{/js/omilab.js}" src="../../static/js/omilab.js"></script>
+    <script>
+        $('.downloadpub').hide();
+        $('body').on('change', '.releasecheckbox', function (){
+            if ($('#rt').is(":checked")) {
+                $('.downloadpub').show();
+            }
+            if ($('#rf').is(":checked")) {
+                $('.downloadpub').hide();
+            }
+        });
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        $.validate({
+            modules : 'html5'
+        });
+
+        $('#startDate').datepicker({
+            format: "dd/mm/yyyy"
+        });
+        $('#endDate').datepicker({
+            format: "dd/mm/yyyy"
+        });
+
+        $(function(){
+            var tags = /*[[${franchisekeywords}]]*/ null;
+
+            $('#keywords').tagit({
+                availableTags: tags,
+                singleField: true,
+                singleFieldNode: $('#keywordshidden')
+            });
+        });
+
+        $("#confbtn").addClass("disabled");
+        $( "#conftext" ).bind("change paste keyup", function() {
+            if( $( "#conftext").val() == "Yes, I know!" ) {
+                $("#confbtn").removeClass("disabled");
+            } else {
+                $("#confbtn").addClass("disabled");
+            }
+        });
+        $( ".abortbtn" ).click(function() {
+            $( "#conftext").val("");
+            $("#confbtn").addClass("disabled");
+        });
+        $('#deleteConfirm').on('show.bs.modal', function (e) {
+            var form = $(e.relatedTarget).closest('div');
+            $("#modalid").val(form.find('input').val());
+            var modalid = $("#modalid").val();
+        });
+
+        $( "#browse" ).click(function() {
+           doBrowse("projectlogo");
+        });
+        $( "#browsemodel" ).click(function() {
+            doBrowse("projectmodel");
+        });
+
+        var tempID;
+        var messageEventListenerAdded;
+        function doBrowse(param) {
+            tempID = param;
+            var width = '80%';
+            var height = '70%';
+
+            var repourl = [[${@environment.getProperty("omilab.repository")}]];
+
+            if(!popup( repourl + "/index.html",width,height))
+                alert("Please enable Popups to use this feature!");
+
+            if(!messageEventListenerAdded) {
+                window.addEventListener("message", receiveMessage, false);
+                messageEventListenerAdded = true;
+            }
+
+        }
+        function receiveMessage(event) {
+            $("#" + tempID).val(encodeURI(event.data));
+        }
+
+        function submitStatus() {
+            var ids = [];
+            $("#status").find(".active").each(function(){ ids.push(this.id); });
+            $( "#hiddenenabled").val(ids);
+            document.statusform.submit();
+        }
+
+        $( "li" ).click(function() {
+            if( !$(this).hasClass("disabled"))
+                $( this ).toggleClass( "active" );
+        });
+
+        if(document.getElementById('desc') != null)
+            LimtCharacters(document.getElementById('desc'),250,'charcount');
+
+        function LimtCharacters(txtMsg, CharLength, indicator) {
+            chars = txtMsg.value.length;
+            document.getElementById(indicator).innerHTML = CharLength - chars;
+            if (chars > CharLength) {
+                txtMsg.value = txtMsg.value.substring(0, CharLength);
+            }
+        }
+
+
+        /*]]>*/
+    </script>
+</body>
+</html>
